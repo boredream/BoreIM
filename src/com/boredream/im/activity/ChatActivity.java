@@ -1,28 +1,19 @@
 package com.boredream.im.activity;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -34,11 +25,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -63,6 +51,7 @@ import com.boredream.im.R;
 import com.boredream.im.adapter.MessageChatAdapter;
 import com.boredream.im.receiver.MyMessageReceiver;
 import com.boredream.im.utils.CommonUtils;
+import com.boredream.im.utils.ImageUtils;
 import com.boredream.im.utils.TitleBuilder;
 
 /**
@@ -111,7 +100,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat);
 		manager = BmobChatManager.getInstance(this);
@@ -134,13 +123,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 	
 			@Override
 			public void onVolumnChanged(int value) {
-				// TODO Auto-generated method stub
+				
 				iv_record.setImageDrawable(drawable_Anims[value]);
 			}
 	
 			@Override
 			public void onTimeChanged(int recordTime, String localPath) {
-				// TODO Auto-generated method stub
+				
 				BmobLog.i("voice", "已录音长度:" + recordTime);
 				if (recordTime >= BmobRecordManager.MAX_RECORD_TIME) {// 1分钟结束，发送消息
 					// 需要重置按钮
@@ -155,7 +144,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 	
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
+							
 							btn_speak.setClickable(true);
 						}
 					}, 1000);
@@ -280,19 +269,19 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 					@Override
 					public void onStart(BmobMsg msg) {
-						// TODO Auto-generated method stub
+						
 						refreshMessage(msg);
 					}
 
 					@Override
 					public void onSuccess() {
-						// TODO Auto-generated method stub
+						
 						mAdapter.notifyDataSetChanged();
 					}
 
 					@Override
 					public void onFailure(int error, String arg1) {
-						// TODO Auto-generated method stub
+						
 						showLog("上传语音失败 -->arg1：" + arg1);
 						mAdapter.notifyDataSetChanged();
 					}
@@ -397,20 +386,20 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 		layout_emo = (LinearLayout) findViewById(R.id.layout_emo);
 		layout_add = (LinearLayout) findViewById(R.id.layout_add);
 		initAddView();
-		initEmoView();
+//		initEmoView();
 
 		// 最中间
 		// 语音框
 		btn_speak = (Button) findViewById(R.id.btn_speak);
 		// 输入框
-		edit_user_comment = (EmoticonsEditText) findViewById(R.id.edit_user_comment);
+		edit_user_comment = (EditText) findViewById(R.id.edit_user_comment);
 		edit_user_comment.setOnClickListener(this);
 		edit_user_comment.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				// TODO Auto-generated method stub
+				
 				if (!TextUtils.isEmpty(s)) {
 					btn_chat_send.setVisibility(View.VISIBLE);
 					btn_chat_keyboard.setVisibility(View.GONE);
@@ -427,93 +416,22 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				// TODO Auto-generated method stub
+				
 
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
+				
 			}
 		});
 
-	}
-
-	List<FaceText> emos;
-
-	/**
-	 * 初始化表情布局
-	 * @Title: initEmoView
-	 * @Description: TODO
-	 * @param
-	 * @return void
-	 * @throws
-	 */
-	private void initEmoView() {
-		pager_emo = (ViewPager) findViewById(R.id.pager_emo);
-		emos = FaceTextUtils.faceTexts;
-
-		List<View> views = new ArrayList<View>();
-		for (int i = 0; i < 2; ++i) {
-			views.add(getGridView(i));
-		}
-		pager_emo.setAdapter(new EmoViewPagerAdapter(views));
-	}
-
-	private View getGridView(final int i) {
-		View view = View.inflate(this, R.layout.include_emo_gridview, null);
-		GridView gridview = (GridView) view.findViewById(R.id.gridview);
-		List<FaceText> list = new ArrayList<FaceText>();
-		if (i == 0) {
-			list.addAll(emos.subList(0, 21));
-		} else if (i == 1) {
-			list.addAll(emos.subList(21, emos.size()));
-		}
-		final EmoteAdapter gridAdapter = new EmoteAdapter(ChatActivity.this,
-				list);
-		gridview.setAdapter(gridAdapter);
-		gridview.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1,
-					int position, long arg3) {
-				FaceText name = (FaceText) gridAdapter.getItem(position);
-				String key = name.text.toString();
-				try {
-					if (edit_user_comment != null && !TextUtils.isEmpty(key)) {
-						int start = edit_user_comment.getSelectionStart();
-						CharSequence content = edit_user_comment.getText()
-								.insert(start, key);
-						edit_user_comment.setText(content);
-						// 定位光标位置
-						CharSequence info = edit_user_comment.getText();
-						if (info instanceof Spannable) {
-							Spannable spanText = (Spannable) info;
-							Selection.setSelection(spanText,
-									start + key.length());
-						}
-					}
-				} catch (Exception e) {
-
-				}
-
-			}
-		});
-		return view;
 	}
 
 	MessageChatAdapter mAdapter;
 	
 	private void initXListView() {
 		mListView = (ListView) findViewById(R.id.mListView);
-		// 首先不允许加载更多
-		mListView.setPullLoadEnable(false);
-		// 允许下拉
-		mListView.setPullRefreshEnable(true);
-		// 设置监听器
-		mListView.setXListViewListener(this);
-		mListView.pullRefreshing();
-		mListView.setDividerHeight(0);
 		// 加载数据
 		initOrRefresh();
 		mListView.setSelection(mAdapter.getCount() - 1);
@@ -521,7 +439,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
-				// TODO Auto-generated method stub
 				hideSoftInputView();
 				layout_more.setVisibility(View.GONE);
 				layout_add.setVisibility(View.GONE);
@@ -532,17 +449,17 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 			}
 		});
 
-		// 重发按钮的点击事件
-		mAdapter.setOnInViewClickListener(R.id.iv_fail_resend,
-				new MessageChatAdapter.onInternalClickListener() {
-
-					@Override
-					public void OnClickListener(View parentV, View v,
-							Integer position, Object values) {
-						// 重发消息
-						showResendDialog(parentV, v, values);
-					}
-				});
+//		// 重发按钮的点击事件
+//		mAdapter.setOnInViewClickListener(R.id.iv_fail_resend,
+//				new MessageChatAdapter.onInternalClickListener() {
+//
+//					@Override
+//					public void OnClickListener(View parentV, View v,
+//							Integer position, Object values) {
+//						// 重发消息
+//						showResendDialog(parentV, v, values);
+//					}
+//				});
 	}
 
 	/**
@@ -554,23 +471,23 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 	 * @throws
 	 */
 	public void showResendDialog(final View parentV, View v, final Object values) {
-		DialogTips dialog = new DialogTips(this, "确定重发该消息", "确定", "取消", "提示",
-				true);
-		// 设置成功事件
-		dialog.SetOnSuccessListener(new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialogInterface, int userId) {
+//		DialogTips dialog = new DialogTips(this, "确定重发该消息", "确定", "取消", "提示",
+//				true);
+//		// 设置成功事件
+//		dialog.SetOnSuccessListener(new DialogInterface.OnClickListener() {
+//			public void onClick(DialogInterface dialogInterface, int userId) {
 				if (((BmobMsg) values).getMsgType() == BmobConfig.TYPE_IMAGE
 						|| ((BmobMsg) values).getMsgType() == BmobConfig.TYPE_VOICE) {// 图片和语音类型的采用
 					resendFileMsg(parentV, values);
 				} else {
 					resendTextMsg(parentV, values);
 				}
-				dialogInterface.dismiss();
-			}
-		});
-		// 显示确认对话框
-		dialog.show();
-		dialog = null;
+//				dialogInterface.dismiss();
+//			}
+//		});
+//		// 显示确认对话框
+//		dialog.show();
+//		dialog = null;
 	}
 
 	/**
@@ -582,7 +499,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 					@Override
 					public void onSuccess() {
-						// TODO Auto-generated method stub
+						
 						showLog("发送成功");
 						((BmobMsg) values)
 								.setStatus(BmobConfig.STATUS_SEND_SUCCESS);
@@ -598,7 +515,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 					@Override
 					public void onFailure(int arg0, String arg1) {
-						// TODO Auto-generated method stub
+						
 						showLog("发送失败:" + arg1);
 						((BmobMsg) values)
 								.setStatus(BmobConfig.STATUS_SEND_FAIL);
@@ -628,12 +545,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 					@Override
 					public void onStart(BmobMsg msg) {
-						// TODO Auto-generated method stub
+						
 					}
 
 					@Override
 					public void onSuccess() {
-						// TODO Auto-generated method stub
+						
 						((BmobMsg) values)
 								.setStatus(BmobConfig.STATUS_SEND_SUCCESS);
 						parentV.findViewById(R.id.progress_load).setVisibility(
@@ -656,7 +573,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 					@Override
 					public void onFailure(int arg0, String arg1) {
-						// TODO Auto-generated method stub
+						
 						((BmobMsg) values)
 								.setStatus(BmobConfig.STATUS_SEND_FAIL);
 						parentV.findViewById(R.id.progress_load).setVisibility(
@@ -672,7 +589,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+		
 		switch (v.getId()) {
 		case R.id.edit_user_comment:// 点击文本输入框
 			mListView.setSelection(mListView.getCount() - 1);
@@ -743,10 +660,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 			break;
 		case R.id.tv_camera:// 拍照
-			selectImageFromCamera();
+			ImageUtils.openCameraImage(this);
 			break;
 		case R.id.tv_picture:// 图片
-			selectImageFromLocal();
+			ImageUtils.openLocalImage(this);
 			break;
 		case R.id.tv_location:// 位置
 			selectLocationFromMap();
@@ -754,6 +671,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 		default:
 			break;
 		}
+	}
+
+	private void hideSoftInputView() {
+		
+		
 	}
 
 	/**
@@ -766,93 +688,45 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 	 * @throws
 	 */
 	private void selectLocationFromMap() {
-		Intent intent = new Intent(this, LocationActivity.class);
-		intent.putExtra("type", "select");
-		startActivityForResult(intent, BmobConstants.REQUESTCODE_TAKE_LOCATION);
+//		Intent intent = new Intent(this, LocationActivity.class);
+//		intent.putExtra("type", "select");
+//		startActivityForResult(intent, BmobConstants.REQUESTCODE_TAKE_LOCATION);
 	}
 
 	private String localCameraPath = "";// 拍照后得到的图片地址
-
-	/**
-	 * 启动相机拍照 startCamera
-	 * 
-	 * @Title: startCamera
-	 * @throws
-	 */
-	public void selectImageFromCamera() {
-		Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		File dir = new File(BmobConstants.BMOB_PICTURE_PATH);
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
-		File file = new File(dir, String.valueOf(System.currentTimeMillis())
-				+ ".jpg");
-		localCameraPath = file.getPath();
-		Uri imageUri = Uri.fromFile(file);
-		openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		startActivityForResult(openCameraIntent,
-				BmobConstants.REQUESTCODE_TAKE_CAMERA);
-	}
-
-	/**
-	 * 选择图片
-	 * @Title: selectImage
-	 * @Description: TODO
-	 * @param
-	 * @return void
-	 * @throws
-	 */
-	public void selectImageFromLocal() {
-		Intent intent;
-		if (Build.VERSION.SDK_INT < 19) {
-			intent = new Intent(Intent.ACTION_GET_CONTENT);
-			intent.setType("image/*");
-		} else {
-			intent = new Intent(
-					Intent.ACTION_PICK,
-					android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-		}
-		startActivityForResult(intent, BmobConstants.REQUESTCODE_TAKE_LOCAL);
-	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			switch (requestCode) {
-			case BmobConstants.REQUESTCODE_TAKE_CAMERA:// 当取到值的时候才上传path路径下的图片到服务器
-				showLog("本地图片的地址：" + localCameraPath);
-				sendImageMessage(localCameraPath);
-				break;
-			case BmobConstants.REQUESTCODE_TAKE_LOCAL:
-				if (data != null) {
-					Uri selectedImage = data.getData();
-					if (selectedImage != null) {
-						Cursor cursor = getContentResolver().query(
-								selectedImage, null, null, null, null);
-						cursor.moveToFirst();
-						int columnIndex = cursor.getColumnIndex("_data");
-						String localSelectPath = cursor.getString(columnIndex);
-						cursor.close();
-						if (localSelectPath == null
-								|| localSelectPath.equals("null")) {
-							showToast("找不到您想要的图片");
-							return;
-						}
-						sendImageMessage(localSelectPath);
-					}
-				}
-				break;
-			case BmobConstants.REQUESTCODE_TAKE_LOCATION:// 地理位置
-				double latitude = data.getDoubleExtra("x", 0);// 维度
-				double longtitude = data.getDoubleExtra("y", 0);// 经度
-				String address = data.getStringExtra("address");
-				if (address != null && !address.equals("")) {
-					sendLocationMessage(address, latitude, longtitude);
+			case ImageUtils.GET_IMAGE_BY_CAMERA:
+				if(resultCode == RESULT_CANCELED) {
+					// 如果拍照取消,将之前新增的图片地址删除
+					ImageUtils.deleteImageUri(this, ImageUtils.imageUriFromCamera);
 				} else {
-					showToast("无法获取到您的位置信息!");
+//					// 拍照后将图片添加到页面上
+					localCameraPath = ImageUtils.getImageAbsolutePath(
+							this, ImageUtils.imageUriFromCamera);
+					sendImageMessage(localCameraPath);
 				}
-
+			case ImageUtils.GET_IMAGE_FROM_PHONE:
+				if(resultCode != RESULT_CANCELED) {
+					// 本地相册选择完后将图片添加到页面上
+					localCameraPath = ImageUtils.getImageAbsolutePath(this, data.getData());
+					sendImageMessage(localCameraPath);
+				}
 				break;
+//			case BmobConstants.REQUESTCODE_TAKE_LOCATION:// 地理位置
+//				double latitude = data.getDoubleExtra("x", 0);// 维度
+//				double longtitude = data.getDoubleExtra("y", 0);// 经度
+//				String address = data.getStringExtra("address");
+//				if (address != null && !address.equals("")) {
+//					sendLocationMessage(address, latitude, longtitude);
+//				} else {
+//					showToast("无法获取到您的位置信息!");
+//				}
+//
+//				break;
 			}
 		}
 	}
@@ -901,7 +775,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 			@Override
 			public void onStart(BmobMsg msg) {
-				// TODO Auto-generated method stub
+				
 				showLog("开始上传onStart：" + msg.getContent() + ",状态："
 						+ msg.getStatus());
 				refreshMessage(msg);
@@ -909,13 +783,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 			@Override
 			public void onSuccess() {
-				// TODO Auto-generated method stub
+				
 				mAdapter.notifyDataSetChanged();
 			}
 
 			@Override
 			public void onFailure(int error, String arg1) {
-				// TODO Auto-generated method stub
+				
 				showLog("上传失败 -->arg1：" + arg1);
 				mAdapter.notifyDataSetChanged();
 			}
@@ -959,7 +833,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
+		
 		super.onResume();
 		// 新消息到达，重新刷新界面
 		initOrRefresh();
@@ -973,7 +847,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 		MyMessageReceiver.ehList.remove(this);// 监听推送的消息
 		// 停止录音
@@ -982,10 +855,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 			layout_record.setVisibility(View.GONE);
 		}
 		// 停止播放录音
-		if (NewRecordPlayClickListener.isPlaying
-				&& NewRecordPlayClickListener.currentPlayListener != null) {
-			NewRecordPlayClickListener.currentPlayListener.stopPlayRecord();
-		}
+//		if (NewRecordPlayClickListener.isPlaying
+//				&& NewRecordPlayClickListener.currentPlayListener != null) {
+//			NewRecordPlayClickListener.currentPlayListener.stopPlayRecord();
+//		}
 
 	}
 
@@ -1065,7 +938,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 	
 	@Override
 	public void onMessage(BmobMsg message) {
-		// TODO Auto-generated method stub
+		
 		Message handlerMsg = handler.obtainMessage(NEW_MESSAGE);
 		handlerMsg.obj = message;
 		handler.sendMessage(handlerMsg);
@@ -1073,7 +946,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 	@Override
 	public void onNetChange(boolean isNetConnected) {
-		// TODO Auto-generated method stub
+		
 		if (!isNetConnected) {
 			showToast(R.string.network_tips);
 		}
@@ -1081,19 +954,18 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 	@Override
 	public void onAddUser(BmobInvitation invite) {
-		// TODO Auto-generated method stub
+		
 
 	}
 
 	@Override
 	public void onOffline() {
-		// TODO Auto-generated method stub
-		showOfflineDialog(this);
+//		showOfflineDialog(this);
 	}
 
 	@Override
 	public void onReaded(String conversionId, String msgTime) {
-		// TODO Auto-generated method stub
+		
 		// 此处应该过滤掉不是和当前用户的聊天的回执消息界面的刷新
 		if (conversionId.split("&")[1].equals(targetId)) {
 			// 修改界面上指定消息的阅读状态
@@ -1108,12 +980,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 	}
 
 	public void onRefresh() {
-		// TODO Auto-generated method stub
+		
 		handler.postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				
 				MsgPagerNum++;
 				int total = BmobDB.create(ChatActivity.this).queryChatTotalCount(targetId);
 				BmobLog.i("记录总数：" + total);
@@ -1125,19 +997,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 					mAdapter.setList(msgList);
 					mListView.setSelection(mAdapter.getCount() - currents - 1);
 				}
-				mListView.stopRefresh();
 			}
 		}, 1000);
 	}
 
 	@Override
-	public void onLoadMore() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
+		
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			if (layout_more.getVisibility() == 0) {
 				layout_more.setVisibility(View.GONE);
@@ -1152,7 +1018,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		hideSoftInputView();
 		try {

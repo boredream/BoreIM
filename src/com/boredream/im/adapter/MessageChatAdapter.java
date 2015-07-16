@@ -1,19 +1,14 @@
 package com.boredream.im.adapter;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.text.SpannableString;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import cn.bmob.im.BmobDownloadManager;
@@ -23,14 +18,9 @@ import cn.bmob.im.config.BmobConfig;
 import cn.bmob.im.inteface.DownloadListener;
 
 import com.boredream.im.R;
-import com.boredream.im.adapter.ChatUserAdapter.ViewHolder;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 /**
  * 聊天适配器
@@ -58,6 +48,19 @@ public class MessageChatAdapter extends BaseAdapter {
 
 	private Context context;
 	private List<BmobMsg> list;
+	
+	public List<BmobMsg> getList() {
+		return list;
+	}
+	
+	public void setList(List<BmobMsg> list) {
+		this.list = list;
+	}
+	
+	public void add(BmobMsg msg) {
+		list.add(msg);
+		notifyDataSetChanged();
+	}
 	
 	private String curUserId;
 
@@ -98,117 +101,64 @@ public class MessageChatAdapter extends BaseAdapter {
 		return position;
 	}
 
+	ViewHolder holder;
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		BmobMsg msg = getItem(position);
 		// 信息所属id如果是当前用户,即该信息为send发送,否则为receiver接收
 		boolean isSend = msg.getBelongId().equals(curUserId);
-		int layoutId = isSend ? R.layout.item_chat_sent : R.layout.item_chat_received;
 		
-		// 填充布局
-		ViewHolder sendHolder = null;
-		ViewHolder receiverHolder = null;
+//		ViewHolder receiverHolder;
 		
-		ViewHolder holder = isSend ? sendHolder : receiverHolder;
-		
-		if(convertView == null || convertView.getTag() ) {
-			
-		}
-		
-		if(convertView != null && (holder=(ViewHolder) convertView.getTag()) != null) {
-			// do nothing
+		if (isSend) {
+			if (convertView == null) {
+				holder = new ViewHolder();
+				convertView = View.inflate(context, R.layout.item_chat_sent, null);
+				holder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
+				holder.iv_fail_resend = (ImageView) convertView.findViewById(R.id.iv_fail_resend);
+				holder.tv_send_status = (TextView) convertView.findViewById(R.id.tv_send_status);
+				holder.progress_load = (ProgressBar) convertView.findViewById(R.id.progress_load);
+				holder.iv_picture = (ImageView) convertView.findViewById(R.id.iv_picture);
+				holder.layout_location = (LinearLayout) convertView.findViewById(R.id.layout_location);
+				holder.tv_location = (TextView) convertView.findViewById(R.id.tv_location);
+				holder.tv_message = (TextView) convertView.findViewById(R.id.tv_message);
+				holder.layout_voice = (LinearLayout) convertView.findViewById(R.id.layout_voice);
+				holder.iv_voice = (ImageView) convertView.findViewById(R.id.iv_voice);
+				holder.tv_voice_length = (TextView) convertView.findViewById(R.id.tv_voice_length);
+				holder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
 		} else {
-			holder = new ViewHolder();
-			convertView = View.inflate(context, layoutId, null);
-			holder.iv_friend_avatar = (ImageView) convertView.findViewById(R.id.iv_friend_avatar);
-			convertView.setTag(holder);
+			if (convertView == null) {
+				holder = new ViewHolder();
+				convertView = View.inflate(context, R.layout.item_chat_received, null);
+				holder.tv_time = (TextView) convertView.findViewById(R.id.tv_time);
+				holder.iv_fail_resend = (ImageView) convertView.findViewById(R.id.iv_fail_resend);
+				holder.tv_send_status = (TextView) convertView.findViewById(R.id.tv_send_status);
+				holder.progress_load = (ProgressBar) convertView.findViewById(R.id.progress_load);
+				holder.iv_picture = (ImageView) convertView.findViewById(R.id.iv_picture);
+				holder.layout_location = (LinearLayout) convertView.findViewById(R.id.layout_location);
+				holder.tv_location = (TextView) convertView.findViewById(R.id.tv_location);
+				holder.tv_message = (TextView) convertView.findViewById(R.id.tv_message);
+				holder.layout_voice = (LinearLayout) convertView.findViewById(R.id.layout_voice);
+				holder.iv_voice = (ImageView) convertView.findViewById(R.id.iv_voice);
+				holder.tv_voice_length = (TextView) convertView.findViewById(R.id.tv_voice_length);
+				holder.iv_avatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
 		}
 		
-//		if(isSend) {
-//			if(convertView == null) {
-//				sendHolder = new ViewHolder();
-//				convertView = View.inflate(context, layoutId , null);
-//				sendHolder.iv_friend_avatar = (ImageView) convertView.findViewById(R.id.iv_friend_avatar);
-//				convertView.setTag(sendHolder);
-//			} else {
-//				sendHolder = (ViewHolder) convertView.getTag();
-//			}
-//		} else {
-//			if(convertView == null) {
-//				receiverHolder = new ViewHolder();
-//				convertView = View.inflate(context, layoutId , null);
-//				receiverHolder.iv_friend_avatar = (ImageView) convertView.findViewById(R.id.iv_friend_avatar);
-//				convertView.setTag(receiverHolder);
-//			} else {
-//				receiverHolder = (ViewHolder) convertView.getTag();
-//			}
-//		}
-		
-		return convertView;
-	}
-	
-	static class ViewHolder {
-		
-	}
-
-	private View createViewByType(Context context, BmobMsg msg, int position) {
-		// 信息所属id如果是当前用户,即该信息为send发送,否则为receiver接收
-		boolean isSend = msg.getBelongId().equals(curUserId);
-		int layoutId = isSend ? R.layout.item_chat_sent : R.layout.item_chat_received;
-		return View.inflate(context, layoutId , null);
-	}
-
-	@Override
-	public View bindView(final int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		final BmobMsg item = list.get(position);
-		if (convertView == null) {
-			convertView = createViewByType(item, position);
-		}
-		// 文本类型
-		ImageView iv_avatar = ViewHolder.get(convertView, R.id.iv_avatar);
-		final ImageView iv_fail_resend = ViewHolder.get(convertView, R.id.iv_fail_resend);// 失败重发
-		final TextView tv_send_status = ViewHolder.get(convertView, R.id.tv_send_status);// 发送状态
-		TextView tv_time = ViewHolder.get(convertView, R.id.tv_time);
-		TextView tv_message = ViewHolder.get(convertView, R.id.tv_message);
-		// 图片
-		ImageView iv_picture = ViewHolder.get(convertView, R.id.iv_picture);
-		final ProgressBar progress_load = ViewHolder.get(convertView, R.id.progress_load);// 进度条
-		// 位置
-		TextView tv_location = ViewHolder.get(convertView, R.id.tv_location);
-		// 语音
-		final ImageView iv_voice = ViewHolder.get(convertView, R.id.iv_voice);
-		// 语音长度
-		final TextView tv_voice_length = ViewHolder.get(convertView, R.id.tv_voice_length);
-
+		BmobMsg item = getItem(position);
 		// 点击头像进入个人资料
 		String avatar = item.getBelongAvatar();
-		if (avatar != null && !avatar.equals("")) {// 加载头像-为了不每次都加载头像
-			ImageLoader.getInstance().displayImage(avatar, iv_avatar, ImageLoadOptions.getOptions(), animateFirstListener);
-		} else {
-			iv_avatar.setImageResource(R.drawable.head);
-		}
+		ImageLoader.getInstance().displayImage(avatar, holder.iv_avatar);
 
-		iv_avatar.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				Intent intent = new Intent(mContext, SetMyInfoActivity.class);
-				if (getItemViewType(position) == TYPE_RECEIVER_TXT
-						|| getItemViewType(position) == TYPE_RECEIVER_IMAGE
-						|| getItemViewType(position) == TYPE_RECEIVER_LOCATION
-						|| getItemViewType(position) == TYPE_RECEIVER_VOICE) {
-					intent.putExtra("from", "other");
-					intent.putExtra("username", item.getBelongUsername());
-				} else {
-					intent.putExtra("from", "me");
-				}
-				mContext.startActivity(intent);
-			}
-		});
-
-		tv_time.setText(TimeUtil.getChatTime(Long.parseLong(item.getMsgTime())));
+//		tv_time.setText(TimeUtil.getChatTime(Long.parseLong(item.getMsgTime())));
+		holder.tv_time.setText(item.getMsgTime());
 
 		if (getItemViewType(position) == TYPE_SEND_TXT
 				// ||getItemViewType(position)==TYPE_SEND_IMAGE//图片单独处理
@@ -216,168 +166,154 @@ public class MessageChatAdapter extends BaseAdapter {
 				|| getItemViewType(position) == TYPE_SEND_VOICE) {// 只有自己发送的消息才有重发机制
 			// 状态描述
 			if (item.getStatus() == BmobConfig.STATUS_SEND_SUCCESS) {// 发送成功
-				progress_load.setVisibility(View.INVISIBLE);
-				iv_fail_resend.setVisibility(View.INVISIBLE);
+				holder.progress_load.setVisibility(View.INVISIBLE);
+				holder.iv_fail_resend.setVisibility(View.INVISIBLE);
 				if (item.getMsgType() == BmobConfig.TYPE_VOICE) {
-					tv_send_status.setVisibility(View.GONE);
-					tv_voice_length.setVisibility(View.VISIBLE);
+					holder.tv_send_status.setVisibility(View.GONE);
+					holder.tv_voice_length.setVisibility(View.VISIBLE);
 				} else {
-					tv_send_status.setVisibility(View.VISIBLE);
-					tv_send_status.setText("已发送");
+					holder.tv_send_status.setVisibility(View.VISIBLE);
+					holder.tv_send_status.setText("已发送");
 				}
 			} else if (item.getStatus() == BmobConfig.STATUS_SEND_FAIL) {// 服务器无响应或者查询失败等原因造成的发送失败，均需要重发
-				progress_load.setVisibility(View.INVISIBLE);
-				iv_fail_resend.setVisibility(View.VISIBLE);
-				tv_send_status.setVisibility(View.INVISIBLE);
+				holder.progress_load.setVisibility(View.INVISIBLE);
+				holder.iv_fail_resend.setVisibility(View.VISIBLE);
+				holder.tv_send_status.setVisibility(View.INVISIBLE);
 				if (item.getMsgType() == BmobConfig.TYPE_VOICE) {
-					tv_voice_length.setVisibility(View.GONE);
+					holder.tv_voice_length.setVisibility(View.GONE);
 				}
 			} else if (item.getStatus() == BmobConfig.STATUS_SEND_RECEIVERED) {// 对方已接收到
-				progress_load.setVisibility(View.INVISIBLE);
-				iv_fail_resend.setVisibility(View.INVISIBLE);
+				holder.progress_load.setVisibility(View.INVISIBLE);
+				holder.iv_fail_resend.setVisibility(View.INVISIBLE);
 				if (item.getMsgType() == BmobConfig.TYPE_VOICE) {
-					tv_send_status.setVisibility(View.GONE);
-					tv_voice_length.setVisibility(View.VISIBLE);
+					holder.tv_send_status.setVisibility(View.GONE);
+					holder.tv_voice_length.setVisibility(View.VISIBLE);
 				} else {
-					tv_send_status.setVisibility(View.VISIBLE);
-					tv_send_status.setText("已阅读");
+					holder.tv_send_status.setVisibility(View.VISIBLE);
+					holder.tv_send_status.setText("已阅读");
 				}
 			} else if (item.getStatus() == BmobConfig.STATUS_SEND_START) {// 开始上传
-				progress_load.setVisibility(View.VISIBLE);
-				iv_fail_resend.setVisibility(View.INVISIBLE);
-				tv_send_status.setVisibility(View.INVISIBLE);
+				holder.progress_load.setVisibility(View.VISIBLE);
+				holder.iv_fail_resend.setVisibility(View.INVISIBLE);
+				holder.tv_send_status.setVisibility(View.INVISIBLE);
 				if (item.getMsgType() == BmobConfig.TYPE_VOICE) {
-					tv_voice_length.setVisibility(View.GONE);
+					holder.tv_voice_length.setVisibility(View.GONE);
 				}
 			}
 		}
+		
 		// 根据类型显示内容
 		final String text = item.getContent();
 		switch (item.getMsgType()) {
 		case BmobConfig.TYPE_TEXT:
-			try {
-				SpannableString spannableString = FaceTextUtils
-						.toSpannableString(mContext, text);
-				tv_message.setText(spannableString);
-			} catch (Exception e) {
-			}
+			holder.tv_message.setText(text);
 			break;
-
 		case BmobConfig.TYPE_IMAGE:// 图片类
-			try {
-				if (text != null && !text.equals("")) {// 发送成功之后存储的图片类型的content和接收到的是不一样的
-					dealWithImage(position, progress_load, iv_fail_resend, tv_send_status, iv_picture, item);
-				}
-				iv_picture.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View arg0) {
-						// TODO Auto-generated method stub
-						Intent intent = new Intent(mContext, ImageBrowserActivity.class);
-						ArrayList<String> photos = new ArrayList<String>();
-						photos.add(getImageUrl(item));
-						intent.putStringArrayListExtra("photos", photos);
-						intent.putExtra("position", 0);
-						mContext.startActivity(intent);
-					}
-				});
-
-			} catch (Exception e) {
+			if (text != null && !text.equals("")) {// 发送成功之后存储的图片类型的content和接收到的是不一样的
+				dealWithImage(position, 
+						holder.progress_load, 
+						holder.iv_fail_resend, 
+						holder.tv_send_status, 
+						holder.iv_picture, 
+						item);
 			}
 			break;
-
 		case BmobConfig.TYPE_LOCATION:// 位置信息
-			try {
-				if (text != null && !text.equals("")) {
-					String address = text.split("&")[0];
-					final String latitude = text.split("&")[1];// 维度
-					final String longtitude = text.split("&")[2];// 经度
-					tv_location.setText(address);
-					tv_location.setOnClickListener(new OnClickListener() {
-
-						@Override
-						public void onClick(View arg0) {
-							// TODO Auto-generated method stub
-							Intent intent = new Intent(mContext, LocationActivity.class);
-							intent.putExtra("type", "scan");
-							intent.putExtra("latitude", Double.parseDouble(latitude));// 维度
-							intent.putExtra("longtitude", Double.parseDouble(longtitude));// 经度
-							mContext.startActivity(intent);
-						}
-					});
-				}
-			} catch (Exception e) {
-
+			if (text != null && !text.equals("")) {
+				String address = text.split("&")[0];
+				final String latitude = text.split("&")[1];// 维度
+				final String longtitude = text.split("&")[2];// 经度
+				holder.tv_location.setText(address);
 			}
 			break;
 		case BmobConfig.TYPE_VOICE:// 语音消息
-			try {
-				if (text != null && !text.equals("")) {
-					tv_voice_length.setVisibility(View.VISIBLE);
-					String content = item.getContent();
-					if (item.getBelongId().equals(curUserId)) {// 发送的消息
-						if (item.getStatus() == BmobConfig.STATUS_SEND_RECEIVERED
-								|| item.getStatus() == BmobConfig.STATUS_SEND_SUCCESS) {// 当发送成功或者发送已阅读的时候，则显示语音长度
-							tv_voice_length.setVisibility(View.VISIBLE);
-							String length = content.split("&")[2];
-							tv_voice_length.setText(length + "\''");
-						} else {
-							tv_voice_length.setVisibility(View.INVISIBLE);
-						}
-					} else {// 收到的消息
-						boolean isExists = BmobDownloadManager.checkTargetPathExist(curUserId, item);
-						if (!isExists) {// 若指定格式的录音文件不存在，则需要下载，因为其文件比较小，故放在此下载
-							String netUrl = content.split("&")[0];
-							final String length = content.split("&")[1];
-							BmobDownloadManager downloadTask = new BmobDownloadManager(mContext, item, new DownloadListener() {
+			if (text != null && !text.equals("")) {
+				holder.tv_voice_length.setVisibility(View.VISIBLE);
+				String content = item.getContent();
+				if (item.getBelongId().equals(curUserId)) {// 发送的消息
+					if (item.getStatus() == BmobConfig.STATUS_SEND_RECEIVERED
+							|| item.getStatus() == BmobConfig.STATUS_SEND_SUCCESS) {// 当发送成功或者发送已阅读的时候，则显示语音长度
+						holder.tv_voice_length.setVisibility(View.VISIBLE);
+						String length = content.split("&")[2];
+						holder.tv_voice_length.setText(length + "\''");
+					} else {
+						holder.tv_voice_length.setVisibility(View.INVISIBLE);
+					}
+				} else {// 收到的消息
+					boolean isExists = BmobDownloadManager.checkTargetPathExist(curUserId, item);
+					if (!isExists) {// 若指定格式的录音文件不存在，则需要下载，因为其文件比较小，故放在此下载
+						String netUrl = content.split("&")[0];
+						final String length = content.split("&")[1];
+						BmobDownloadManager downloadTask = new BmobDownloadManager(context, item, 
+								new DownloadListener() {
 
-								@Override
-								public void onStart() {
-									// TODO Auto-generated method stub
-									progress_load.setVisibility(View.VISIBLE);
-									tv_voice_length.setVisibility(View.GONE);
-									iv_voice.setVisibility(View.INVISIBLE);// 只有下载完成才显示播放的按钮
-								}
+							@Override
+							public void onStart() {
+								// TODO Auto-generated method stub
+								holder.progress_load.setVisibility(View.VISIBLE);
+								holder.tv_voice_length.setVisibility(View.GONE);
+								holder.iv_voice.setVisibility(View.INVISIBLE);// 只有下载完成才显示播放的按钮
+							}
 
-								@Override
-								public void onSuccess() {
-									// TODO Auto-generated method stub
-									progress_load.setVisibility(View.GONE);
-									tv_voice_length.setVisibility(View.VISIBLE);
-									tv_voice_length.setText(length + "\''");
-									iv_voice.setVisibility(View.VISIBLE);
-								}
+							@Override
+							public void onSuccess() {
+								// TODO Auto-generated method stub
+								holder.progress_load.setVisibility(View.GONE);
+								holder.tv_voice_length.setVisibility(View.VISIBLE);
+								holder.tv_voice_length.setText(length + "\''");
+								holder.iv_voice.setVisibility(View.VISIBLE);
+							}
 
-								@Override
-								public void onError(String error) {
-									// TODO Auto-generated method stub
-									progress_load.setVisibility(View.GONE);
-									tv_voice_length.setVisibility(View.GONE);
-									iv_voice.setVisibility(View.INVISIBLE);
-								}
-							});
-							downloadTask.execute(netUrl);
-						} else {
-							String length = content.split("&")[2];
-							tv_voice_length.setText(length + "\''");
-						}
+							@Override
+							public void onError(String error) {
+								// TODO Auto-generated method stub
+								holder.progress_load.setVisibility(View.GONE);
+								holder.tv_voice_length.setVisibility(View.GONE);
+								holder.iv_voice.setVisibility(View.INVISIBLE);
+							}
+						});
+						downloadTask.execute(netUrl);
+					} else {
+						String length = content.split("&")[2];
+						holder.tv_voice_length.setText(length + "\''");
 					}
 				}
-				// 播放语音文件
-				iv_voice.setOnClickListener(new NewRecordPlayClickListener(mContext, item, iv_voice));
-			} catch (Exception e) {
-
 			}
-
+			// 播放语音文件
+//			iv_voice.setOnClickListener(new NewRecordPlayClickListener(mContext, item, iv_voice));
 			break;
 		default:
 			break;
 		}
+		
 		return convertView;
+	}
+	
+	static class ViewHolder {
+		public TextView tv_time;
+		public ImageView iv_fail_resend;
+		public TextView tv_send_status;
+		public ProgressBar progress_load;
+		public ImageView iv_picture;
+		public LinearLayout layout_location;
+		public TextView tv_location;
+		public TextView tv_message;
+		public LinearLayout layout_voice;
+		public ImageView iv_voice;
+		public TextView tv_voice_length;
+		public ImageView iv_avatar;
+	}
+	
+	static class ViewHolderSend extends ViewHolder {
+		
+	}
+	
+	static class ViewHolderReceiver extends ViewHolder {
+		
 	}
 
 	/**
-	 * 获取图片的地址--
+	 * 获取图片的地址
 	 * 
 	 * @Description: TODO
 	 * @param @param item
@@ -435,6 +371,7 @@ public class MessageChatAdapter extends BaseAdapter {
 				tv_send_status.setVisibility(View.VISIBLE);
 				tv_send_status.setText("已阅读");
 			}
+			
 			// 如果是发送的图片的话，因为开始发送存储的地址是本地地址，发送成功之后存储的是本地地址+"&"+网络地址，因此需要判断下
 			String showUrl = "";
 			if (text.contains("&")) {
@@ -445,7 +382,7 @@ public class MessageChatAdapter extends BaseAdapter {
 			// 为了方便每次都是取本地图片显示
 			ImageLoader.getInstance().displayImage(showUrl, iv_picture);
 		} else {
-			ImageLoader.getInstance().displayImage(text, iv_picture, options, new ImageLoadingListener() {
+			ImageLoader.getInstance().displayImage(text, iv_picture, new ImageLoadingListener() {
 
 				@Override
 				public void onLoadingStarted(String imageUri, View view) {
@@ -472,23 +409,6 @@ public class MessageChatAdapter extends BaseAdapter {
 					progress_load.setVisibility(View.INVISIBLE);
 				}
 			});
-		}
-	}
-
-	private static class AnimateFirstDisplayListener extends SimpleImageLoadingListener {
-
-		static final List<String> displayedImages = Collections.synchronizedList(new LinkedList<String>());
-
-		@Override
-		public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-			if (loadedImage != null) {
-				ImageView imageView = (ImageView) view;
-				boolean firstDisplay = !displayedImages.contains(imageUri);
-				if (firstDisplay) {
-					FadeInBitmapDisplayer.animate(imageView, 500);
-					displayedImages.add(imageUri);
-				}
-			}
 		}
 	}
 

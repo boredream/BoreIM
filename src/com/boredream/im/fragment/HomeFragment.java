@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import cn.bmob.im.bean.BmobChatUser;
 import cn.bmob.im.db.BmobDB;
 
 import com.boredream.im.R;
+import com.boredream.im.activity.ChatActivity;
 import com.boredream.im.activity.DetailActivity;
 import com.boredream.im.adapter.ChatUserAdapter;
 import com.boredream.im.utils.CollectionUtils;
@@ -61,6 +64,15 @@ public class HomeFragment extends BaseFragment {
 		lv_friends = (ListView) view.findViewById(R.id.lv_friends);
 		adapter = new ChatUserAdapter(activity, users);
 		lv_friends.setAdapter(adapter);
+		lv_friends.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Intent intent = new Intent(activity, ChatActivity.class);
+				intent.putExtra("user", adapter.getItem(position));
+				startActivity(intent);
+			}
+		});
 	}
 	
 	/**

@@ -86,7 +86,8 @@
         <activity android:name="com.boredream.im.activity.LoginActivity" />
         <activity android:name="com.boredream.im.activity.RegisterActivity" />
         <activity android:name="com.boredream.im.activity.MainActivity" />
-        <activity android:name="com.boredream.im.activity.DetailActivitylActivity" />
+        <activity android:name="com.boredream.im.activity.DetailActivity" />
+        <activity android:name="com.boredream.im.activity.ChatActivity" />
 
         <!-- IM聊天所需的Push start -->
         <service
