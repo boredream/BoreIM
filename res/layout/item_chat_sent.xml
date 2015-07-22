@@ -54,18 +54,22 @@
             android:background="@drawable/chat_right_qp" >
 
             <include
+                android:id="@+id/item_chat_image"
                 layout="@layout/item_chat_image"
                 android:visibility="gone" />
 
             <include
+                android:id="@+id/item_chat_location"
                 layout="@layout/item_chat_location"
                 android:visibility="gone" />
 
             <include
+                android:id="@+id/item_chat_message"
                 layout="@layout/item_chat_message"
                 android:visibility="gone" />
 
             <include
+                android:id="@+id/item_chat_voice"
                 layout="@layout/item_chat_voice"
                 android:visibility="gone" />
         </FrameLayout>

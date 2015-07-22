@@ -128,7 +128,7 @@
         </service>
         
         <!-- 聊天消息接收器 -->
-        <receiver android:name=".MyMessageReceiver" >
+        <receiver android:name="com.boredream.im.receiver.MyMessageReceiver" >
             <intent-filter>
                 <action android:name="cn.bmob.push.action.MESSAGE" />
             </intent-filter>

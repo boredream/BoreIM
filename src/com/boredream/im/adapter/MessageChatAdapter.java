@@ -26,7 +26,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
  * 聊天适配器
  * 
  * @ClassName: MessageChatAdapter
- * @Description: TODO
+ * 
  * @author smile
  * @date 2014-5-28 下午5:34:07
  */
@@ -108,8 +108,6 @@ public class MessageChatAdapter extends BaseAdapter {
 		// 信息所属id如果是当前用户,即该信息为send发送,否则为receiver接收
 		boolean isSend = msg.getBelongId().equals(curUserId);
 		
-//		ViewHolder receiverHolder;
-		
 		if (isSend) {
 			if (convertView == null) {
 				holder = new ViewHolder();
@@ -118,10 +116,14 @@ public class MessageChatAdapter extends BaseAdapter {
 				holder.iv_fail_resend = (ImageView) convertView.findViewById(R.id.iv_fail_resend);
 				holder.tv_send_status = (TextView) convertView.findViewById(R.id.tv_send_status);
 				holder.progress_load = (ProgressBar) convertView.findViewById(R.id.progress_load);
+				holder.item_chat_image = convertView.findViewById(R.id.item_chat_image);
 				holder.iv_picture = (ImageView) convertView.findViewById(R.id.iv_picture);
+				holder.item_chat_location = convertView.findViewById(R.id.item_chat_location);
 				holder.layout_location = (LinearLayout) convertView.findViewById(R.id.layout_location);
 				holder.tv_location = (TextView) convertView.findViewById(R.id.tv_location);
+				holder.item_chat_message = convertView.findViewById(R.id.item_chat_message);
 				holder.tv_message = (TextView) convertView.findViewById(R.id.tv_message);
+				holder.item_chat_voice = convertView.findViewById(R.id.item_chat_voice);
 				holder.layout_voice = (LinearLayout) convertView.findViewById(R.id.layout_voice);
 				holder.iv_voice = (ImageView) convertView.findViewById(R.id.iv_voice);
 				holder.tv_voice_length = (TextView) convertView.findViewById(R.id.tv_voice_length);
@@ -138,10 +140,14 @@ public class MessageChatAdapter extends BaseAdapter {
 				holder.iv_fail_resend = (ImageView) convertView.findViewById(R.id.iv_fail_resend);
 				holder.tv_send_status = (TextView) convertView.findViewById(R.id.tv_send_status);
 				holder.progress_load = (ProgressBar) convertView.findViewById(R.id.progress_load);
+				holder.item_chat_image = convertView.findViewById(R.id.item_chat_image);
 				holder.iv_picture = (ImageView) convertView.findViewById(R.id.iv_picture);
+				holder.item_chat_location = convertView.findViewById(R.id.item_chat_location);
 				holder.layout_location = (LinearLayout) convertView.findViewById(R.id.layout_location);
 				holder.tv_location = (TextView) convertView.findViewById(R.id.tv_location);
+				holder.item_chat_message = convertView.findViewById(R.id.item_chat_message);
 				holder.tv_message = (TextView) convertView.findViewById(R.id.tv_message);
+				holder.item_chat_voice = convertView.findViewById(R.id.item_chat_voice);
 				holder.layout_voice = (LinearLayout) convertView.findViewById(R.id.layout_voice);
 				holder.iv_voice = (ImageView) convertView.findViewById(R.id.iv_voice);
 				holder.tv_voice_length = (TextView) convertView.findViewById(R.id.tv_voice_length);
@@ -206,9 +212,11 @@ public class MessageChatAdapter extends BaseAdapter {
 		final String text = item.getContent();
 		switch (item.getMsgType()) {
 		case BmobConfig.TYPE_TEXT:
+			holder.item_chat_message.setVisibility(View.VISIBLE);
 			holder.tv_message.setText(text);
 			break;
 		case BmobConfig.TYPE_IMAGE:// 图片类
+			holder.item_chat_image.setVisibility(View.VISIBLE);
 			if (text != null && !text.equals("")) {// 发送成功之后存储的图片类型的content和接收到的是不一样的
 				dealWithImage(position, 
 						holder.progress_load, 
@@ -219,6 +227,7 @@ public class MessageChatAdapter extends BaseAdapter {
 			}
 			break;
 		case BmobConfig.TYPE_LOCATION:// 位置信息
+			holder.item_chat_location.setVisibility(View.VISIBLE);
 			if (text != null && !text.equals("")) {
 				String address = text.split("&")[0];
 				final String latitude = text.split("&")[1];// 维度
@@ -227,6 +236,7 @@ public class MessageChatAdapter extends BaseAdapter {
 			}
 			break;
 		case BmobConfig.TYPE_VOICE:// 语音消息
+			holder.item_chat_voice.setVisibility(View.VISIBLE);
 			if (text != null && !text.equals("")) {
 				holder.tv_voice_length.setVisibility(View.VISIBLE);
 				String content = item.getContent();
@@ -249,7 +259,7 @@ public class MessageChatAdapter extends BaseAdapter {
 
 							@Override
 							public void onStart() {
-								// TODO Auto-generated method stub
+								
 								holder.progress_load.setVisibility(View.VISIBLE);
 								holder.tv_voice_length.setVisibility(View.GONE);
 								holder.iv_voice.setVisibility(View.INVISIBLE);// 只有下载完成才显示播放的按钮
@@ -257,7 +267,7 @@ public class MessageChatAdapter extends BaseAdapter {
 
 							@Override
 							public void onSuccess() {
-								// TODO Auto-generated method stub
+								
 								holder.progress_load.setVisibility(View.GONE);
 								holder.tv_voice_length.setVisibility(View.VISIBLE);
 								holder.tv_voice_length.setText(length + "\''");
@@ -266,7 +276,7 @@ public class MessageChatAdapter extends BaseAdapter {
 
 							@Override
 							public void onError(String error) {
-								// TODO Auto-generated method stub
+								
 								holder.progress_load.setVisibility(View.GONE);
 								holder.tv_voice_length.setVisibility(View.GONE);
 								holder.iv_voice.setVisibility(View.INVISIBLE);
@@ -294,37 +304,27 @@ public class MessageChatAdapter extends BaseAdapter {
 		public ImageView iv_fail_resend;
 		public TextView tv_send_status;
 		public ProgressBar progress_load;
+		public View item_chat_image;
 		public ImageView iv_picture;
+		public View item_chat_location;
 		public LinearLayout layout_location;
 		public TextView tv_location;
+		public View item_chat_message;
 		public TextView tv_message;
+		public View item_chat_voice;
 		public LinearLayout layout_voice;
 		public ImageView iv_voice;
 		public TextView tv_voice_length;
 		public ImageView iv_avatar;
 	}
-	
-	static class ViewHolderSend extends ViewHolder {
-		
-	}
-	
-	static class ViewHolderReceiver extends ViewHolder {
-		
-	}
 
 	/**
 	 * 获取图片的地址
-	 * 
-	 * @Description: TODO
-	 * @param @param item
-	 * @param @return
-	 * @return String
-	 * @throws
 	 */
 	private String getImageUrl(BmobMsg item) {
 		String showUrl = "";
 		String text = item.getContent();
-		if (item.getBelongId().equals(curUserId)) {//
+		if (item.getBelongId().equals(curUserId)) {
 			if (text.contains("&")) {
 				showUrl = text.split("&")[0];
 			} else {
@@ -338,16 +338,6 @@ public class MessageChatAdapter extends BaseAdapter {
 
 	/**
 	 * 处理图片
-	 * 
-	 * @Description: TODO
-	 * @param @param position
-	 * @param @param progress_load
-	 * @param @param iv_fail_resend
-	 * @param @param tv_send_status
-	 * @param @param iv_picture
-	 * @param @param item
-	 * @return void
-	 * @throws
 	 */
 	private void dealWithImage(int position, final ProgressBar progress_load, ImageView iv_fail_resend, TextView tv_send_status, ImageView iv_picture, BmobMsg item) {
 		String text = item.getContent();
@@ -386,26 +376,26 @@ public class MessageChatAdapter extends BaseAdapter {
 
 				@Override
 				public void onLoadingStarted(String imageUri, View view) {
-					// TODO Auto-generated method stub
+					
 					progress_load.setVisibility(View.VISIBLE);
 				}
 
 				@Override
 				public void onLoadingFailed(String imageUri, View view,
 						FailReason failReason) {
-					// TODO Auto-generated method stub
+					
 					progress_load.setVisibility(View.INVISIBLE);
 				}
 
 				@Override
 				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-					// TODO Auto-generated method stub
+					
 					progress_load.setVisibility(View.INVISIBLE);
 				}
 
 				@Override
 				public void onLoadingCancelled(String imageUri, View view) {
-					// TODO Auto-generated method stub
+					
 					progress_load.setVisibility(View.INVISIBLE);
 				}
 			});

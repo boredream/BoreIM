@@ -34,7 +34,6 @@ import com.boredream.im.utils.CommonUtils;
  * 推送消息接收器
  * 
  * bmob复制后修改版本,修改处添加了注释 // bore
- * @date 2014-5-30 下午4:01:13
  */
 public class MyMessageReceiver extends BroadcastReceiver {
 
@@ -50,7 +49,6 @@ public class MyMessageReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
 		String json = intent.getStringExtra("msg");
 		BmobLog.i("收到的message = " + json);
 		userManager = BmobUserManager.getInstance(context);
@@ -66,13 +64,6 @@ public class MyMessageReceiver extends BroadcastReceiver {
 
 	/**
 	 * 解析Json字符串
-	 * 
-	 * @Title: parseMessage
-	 * @Description: TODO
-	 * @param @param context
-	 * @param @param json
-	 * @return void
-	 * @throws
 	 */
 	private void parseMessage(final Context context, String json) {
 		JSONObject jo;
@@ -190,10 +181,6 @@ public class MyMessageReceiver extends BroadcastReceiver {
 
 	/**
 	 * 显示与聊天消息的通知
-	 * 
-	 * @Title: showNotify
-	 * @return void
-	 * @throws
 	 */
 	public void showMsgNotify(Context context, BmobMsg msg) {
 		// 更新通知栏
