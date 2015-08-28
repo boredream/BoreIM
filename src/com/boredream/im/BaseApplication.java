@@ -225,6 +225,9 @@ public class BaseApplication extends Application {
 		}
 	}
 
+	/**
+	 * key-username, value-userbean
+	 */
 	private Map<String, BmobChatUser> contactList = new HashMap<String, BmobChatUser>();
 
 	/**

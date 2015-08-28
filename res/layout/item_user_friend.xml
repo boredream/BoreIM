@@ -5,7 +5,8 @@
 
     <TextView
         android:id="@+id/tv_alpha"
-        style="@style/TextViewSubhead" />
+        style="@style/TextViewSubhead"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/iv_friend_avatar"

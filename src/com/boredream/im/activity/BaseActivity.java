@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Toast;
 import cn.bmob.im.BmobChatManager;
 import cn.bmob.im.BmobUserManager;
@@ -19,9 +21,11 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 import com.boredream.im.BaseApplication;
+import com.boredream.im.R;
 import com.boredream.im.entity.User;
 import com.boredream.im.utils.CollectionUtils;
 import com.boredream.im.utils.CommonConstants;
+import com.boredream.im.utils.TitleBuilder;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -67,12 +71,6 @@ public abstract class BaseActivity extends Activity {
 
 	/**
 	 * 用于登陆或者自动登陆情况下的用户资料及好友资料的检测更新
-	 * 
-	 * @Title: updateUserInfos
-	 * @Description: TODO
-	 * @param
-	 * @return void
-	 * @throws
 	 */
 	public void updateUserInfos() {
 		// 更新地理位置信息
@@ -83,7 +81,6 @@ public abstract class BaseActivity extends Activity {
 
 			@Override
 			public void onError(int arg0, String arg1) {
-				// TODO Auto-generated method stub
 				if (arg0 == BmobConfig.CODE_COMMON_NONE) {
 					showLog(arg1);
 				} else {
@@ -93,7 +90,6 @@ public abstract class BaseActivity extends Activity {
 
 			@Override
 			public void onSuccess(List<BmobChatUser> arg0) {
-				// TODO Auto-generated method stub
 				// 保存到application中方便比较
 				application.setContactList(CollectionUtils.list2map(arg0));
 			}
@@ -102,12 +98,6 @@ public abstract class BaseActivity extends Activity {
 
 	/**
 	 * 更新用户的经纬度信息
-	 * 
-	 * @Title: uploadLocation
-	 * @Description: TODO
-	 * @param
-	 * @return void
-	 * @throws
 	 */
 	public void updateUserLocation() {
 		if (BaseApplication.lastPoint != null) {
@@ -123,7 +113,6 @@ public abstract class BaseActivity extends Activity {
 				user.update(this, new UpdateListener() {
 					@Override
 					public void onSuccess() {
-						// TODO Auto-generated method stub
 						application.setLatitude(String.valueOf(user.getLocation().getLatitude()));
 						application.setLongtitude(String.valueOf(user.getLocation().getLongitude()));
 						// ShowLog("经纬度更新成功");
@@ -131,7 +120,6 @@ public abstract class BaseActivity extends Activity {
 
 					@Override
 					public void onFailure(int code, String msg) {
-						// TODO Auto-generated method stub
 						// ShowLog("经纬度更新 失败:"+msg);
 					}
 				});
@@ -169,6 +157,18 @@ public abstract class BaseActivity extends Activity {
 	protected void onPause() {
 		super.onPause();
 		showLog("onPause()");
+	}
+	
+	protected void initBackTitle(String title) {
+		new TitleBuilder(this)
+			.setTitleText(title)
+			.setLeftImage(R.drawable.back_icon)
+			.setLeftOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					finish();
+				}
+			});
 	}
 
 	protected void finishActivity() {

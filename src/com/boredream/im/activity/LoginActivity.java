@@ -1,6 +1,5 @@
 package com.boredream.im.activity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -9,26 +8,25 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import cn.bmob.im.bean.BmobChatUser;
 import cn.bmob.im.util.BmobLog;
 import cn.bmob.v3.listener.SaveListener;
 
 import com.boredream.im.R;
 import com.boredream.im.utils.CommonUtils;
+import com.boredream.im.utils.TitleBuilder;
 
 /**
  * 登陆页
  */
 public class LoginActivity extends BaseActivity implements OnClickListener {
 
-	EditText et_username, et_psw;
-	Button btn_login;
-	TextView btn_register;
-	BmobChatUser currentUser;
+	private EditText et_username;
+	private EditText et_psw;
+	private Button btn_login;
+	private TextView btn_register;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 
@@ -36,6 +34,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void init() {
+		new TitleBuilder(this).setTitleText("登录");
+		
 		et_username = (EditText) findViewById(R.id.et_username);
 		et_psw = (EditText) findViewById(R.id.et_psw);
 		btn_login = (Button) findViewById(R.id.btn_login);
@@ -74,36 +74,21 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			return;
 		}
 
-		final ProgressDialog progress = new ProgressDialog(
-				LoginActivity.this);
-		progress.setMessage("正在登陆...");
-		progress.setCanceledOnTouchOutside(false);
-		progress.show();
+		progressDialog.show();
 		userManager.login(name, password, new SaveListener() {
 
 			@Override
 			public void onSuccess() {
-				// TODO Auto-generated method stub
-				runOnUiThread(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						progress.setMessage("正在获取好友列表...");
-					}
-				});
+				progressDialog.dismiss();
 				// 更新用户的地理位置以及好友的资料
 				updateUserInfos();
-				progress.dismiss();
-				Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-				startActivity(intent);
+				intent2Activity(MainActivity.class);
 				finish();
 			}
 
 			@Override
 			public void onFailure(int errorcode, String arg0) {
-				// TODO Auto-generated method stub
-				progress.dismiss();
+				progressDialog.dismiss();
 				BmobLog.i(arg0);
 				showToast(arg0);
 			}

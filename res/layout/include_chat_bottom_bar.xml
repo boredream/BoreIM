@@ -34,22 +34,21 @@
         <EditText
             android:id="@+id/edit_user_comment"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
+            android:layout_height="40dp"
+            android:layout_margin="4dp"
             android:layout_weight="1.0"
             android:background="@drawable/base_edit_input"
             android:imeOptions="flagNoExtractUi"
-            android:padding="5dp" />
+            android:padding="4dp" />
 
         <Button
             android:id="@+id/btn_speak"
             style="@style/TextViewSubhead"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
+            android:layout_margin="4dp"
             android:layout_weight="1.0"
+            android:padding="4dp"
             android:background="@drawable/btn_chat_record_selector"
             android:gravity="center"
             android:text="@string/longclick_speak"
@@ -86,7 +85,8 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1px"
-        android:background="@color/divider_gray"        android:focusable="false" />
+        android:background="@color/divider_gray"
+        android:focusable="false" />
 
     <LinearLayout
         android:id="@+id/layout_more"
@@ -96,14 +96,14 @@
         android:visibility="gone" >
 
         <LinearLayout
-            android:id="@+id/layout_emo"
+            android:id="@+id/ll_emotion_dashboard"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone" >
 
             <android.support.v4.view.ViewPager
-                android:id="@+id/pager_emo"
+                android:id="@+id/vp_emotion_dashboard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

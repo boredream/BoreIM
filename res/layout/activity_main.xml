@@ -15,11 +15,6 @@
         android:layout_height="1px"
         android:background="#898989" />
 
-    <Button
-        android:id="@+id/btn_ok"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="48dp" >
@@ -32,39 +27,33 @@
             android:orientation="horizontal" >
 
             <RadioButton
-                android:id="@+id/rb_home"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="home" />
+                android:id="@+id/rb_recent"
+                style="@style/RadioButtonBottomTab"
+                android:text="消息" />
 
             <RadioButton
-                android:id="@+id/rb_message"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="msg" />
+                android:id="@+id/rb_contact"
+                style="@style/RadioButtonBottomTab"
+                android:text="好友" />
 
             <RadioButton
-                android:id="@+id/rb_search"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="search" />
+                android:id="@+id/rb_user"
+                style="@style/RadioButtonBottomTab"
+                android:text="我" />
         </RadioGroup>
 
         <LinearLayout
+            android:id="@+id/ll_news"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal" >
 
             <ImageView
-                android:id="@+id/iv_tip_home"
                 android:layout_width="0dp"
                 android:layout_height="12dp"
                 android:layout_weight="1"
                 android:scaleType="fitEnd"
-                android:src="@drawable/msg_tips"
+                android:src="@drawable/msg_news"
                 android:visibility="invisible" />
 
             <ImageView
@@ -72,7 +61,7 @@
                 android:layout_height="12dp"
                 android:layout_weight="1"
                 android:scaleType="fitEnd"
-                android:src="@drawable/msg_tips"
+                android:src="@drawable/msg_news"
                 android:visibility="invisible" />
 
             <ImageView
@@ -80,15 +69,7 @@
                 android:layout_height="12dp"
                 android:layout_weight="1"
                 android:scaleType="fitEnd"
-                android:src="@drawable/msg_tips"
-                android:visibility="invisible" />
-
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="12dp"
-                android:layout_weight="1"
-                android:scaleType="fitEnd"
-                android:src="@drawable/msg_tips"
+                android:src="@drawable/msg_news"
                 android:visibility="invisible" />
         </LinearLayout>
     </RelativeLayout>

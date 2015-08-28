@@ -24,16 +24,15 @@ public class SplashActivity extends BaseActivity {
 
 	private static final int GO_HOME = 100;
 	private static final int GO_LOGIN = 200;
+	private static final long DELAY_TIME = 1000;
 
 	// 定位获取当前用户的地理位置
 	private LocationClient mLocationClient;
 
 	private BaiduReceiver mReceiver;// 注册广播接收器，用于监听网络以及验证key
-	String id = "74b6d0f0adcc4721bdb41d32e7928690";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
 		
@@ -52,21 +51,15 @@ public class SplashActivity extends BaseActivity {
 		if (userManager.getCurrentUser() != null) {
 			// 每次自动登陆的时候就需要更新下当前位置和好友的资料，因为好友的头像，昵称啥的是经常变动的
 			updateUserInfos();
-			mHandler.sendEmptyMessageDelayed(GO_HOME, 2000);
+			mHandler.sendEmptyMessageDelayed(GO_HOME, DELAY_TIME);
 		} else {
-			mHandler.sendEmptyMessageDelayed(GO_LOGIN, 2000);
+			mHandler.sendEmptyMessageDelayed(GO_LOGIN, DELAY_TIME);
 		}
 
 	}
 
 	/**
 	 * 开启定位，更新当前用户的经纬度坐标
-	 * 
-	 * @Title: initLocClient
-	 * @Description: TODO
-	 * @param
-	 * @return void
-	 * @throws
 	 */
 	private void initLocClient() {
 		mLocationClient = BaseApplication.mInstance.mLocationClient;

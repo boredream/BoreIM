@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="16dp" >
+
+    <ImageView
+        android:id="@+id/iv_avatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/avatar_default" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/TextViewSubhead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btn_add"
+        style="@style/ButtonPrimaryColor"
+        android:layout_width="64dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="16dp"
+        android:text="同意" />
+
+</LinearLayout>

@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.content.Context;
 import android.text.SpannableString;
-import android.text.format.DateFormat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,6 +14,7 @@ import cn.bmob.im.config.BmobConfig;
 import cn.bmob.im.db.BmobDB;
 
 import com.boredream.im.R;
+import com.boredream.im.utils.DateUtils;
 import com.boredream.im.utils.EmotionUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -74,7 +74,10 @@ public class MessageRecentAdapter extends BaseAdapter {
 		ImageLoader.getInstance().displayImage(avatar, holder.iv_recent_avatar);
 
 		holder.tv_recent_name.setText(item.getUserName());
-		holder.tv_recent_time.setText(DateFormat.format("yyyy-MM-dd", item.getTime()));
+		
+		// bmob上时间戳是秒为单位
+		holder.tv_recent_time.setText(DateUtils.formatTime(item.getTime()));
+				
 		// 显示内容
 		if (item.getType() == BmobConfig.TYPE_TEXT) {
 			SpannableString spannableString = EmotionUtils.getEmotionContent(

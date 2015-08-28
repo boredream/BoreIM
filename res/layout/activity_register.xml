@@ -2,28 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp" >
+    android:orientation="vertical" >
+
+    <include layout="@layout/include_titlebar" />
 
     <EditText
         android:id="@+id/et_username"
-        style="@style/EditText1Line" />
+        style="@style/EditText1Line"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp" />
 
     <EditText
         android:id="@+id/et_psw"
         style="@style/EditText1Line"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/et_psw_confirm"
         style="@style/EditText1Line"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/btn_register"
         style="@style/ButtonPrimaryColor"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:text="注册" />
 

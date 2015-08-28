@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
 import cn.bmob.im.BmobChatManager;
 import cn.bmob.im.BmobNotifyManager;
 import cn.bmob.im.BmobUserManager;
@@ -26,7 +27,9 @@ import cn.bmob.v3.listener.FindListener;
 
 import com.boredream.im.BaseApplication;
 import com.boredream.im.R;
+import com.boredream.im.activity.ChatActivity;
 import com.boredream.im.activity.MainActivity;
+import com.boredream.im.activity.NewFriendActivity;
 import com.boredream.im.utils.CollectionUtils;
 import com.boredream.im.utils.CommonUtils;
 
@@ -92,7 +95,6 @@ public class MyMessageReceiver extends BroadcastReceiver {
 
 							@Override
 							public void onSuccess(BmobMsg msg) {
-								// TODO Auto-generated method stub
 								if (ehList.size() > 0) {// 有监听的时候，传递下去
 									for (int i = 0; i < ehList.size(); i++) {
 										((EventListener) ehList.get(i)).onMessage(msg);
@@ -108,7 +110,6 @@ public class MyMessageReceiver extends BroadcastReceiver {
 
 							@Override
 							public void onFailure(int code, String arg1) {
-								// TODO Auto-generated method stub
 								BmobLog.i("获取接收的消息失败：" + arg1);
 							}
 						});
@@ -123,9 +124,8 @@ public class MyMessageReceiver extends BroadcastReceiver {
 										for (EventListener handler : ehList)
 											handler.onAddUser(message);
 									} else {
-										// bore
-//										showOtherNotify(context, message.getFromname(), toId, message.getFromname() + "请求添加好友", NewFriendActivity.class);
-										System.out.println("TAG_ADD_CONTACT : " + message.getFromname() + "请求添加好友");;
+										showOtherNotify(context, message.getFromname(), toId, message.getFromname() + "请求添加好友", NewFriendActivity.class);
+										Log.i("DDD", message.getFromname() + " 请求添加好友");
 									}
 								}
 							}
@@ -142,7 +142,6 @@ public class MyMessageReceiver extends BroadcastReceiver {
 
 								@Override
 								public void onSuccess(List<BmobChatUser> arg0) {
-									// TODO Auto-generated method stub
 									// 保存到内存中
 									BaseApplication.mInstance.setContactList(CollectionUtils.list2map(BmobDB.create(context).getContactList()));
 								}
@@ -219,7 +218,7 @@ public class MyMessageReceiver extends BroadcastReceiver {
 		if (isAllow && currentUser != null && currentUser.getObjectId().equals(toId)) {
 			// 同时提醒通知
 			// bore
-//			BmobNotifyManager.getInstance(context).showNotify(isAllowVoice, isAllowVibrate, R.drawable.ic_launcher, ticker, username, ticker.toString(), NewFriendActivity.class);
+			BmobNotifyManager.getInstance(context).showNotify(isAllowVoice, isAllowVibrate, R.drawable.ic_launcher, ticker, username, ticker.toString(), ChatActivity.class);
 			System.out.println("showOtherNotify : " + username + " - " + ticker.toString());;
 		}
 	}

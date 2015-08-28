@@ -28,9 +28,14 @@ public class RegisterActivity extends BaseActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
+		
+		initView();
+	}
+
+	private void initView() {
+		initBackTitle("注册");
 		
 		et_username = (EditText) findViewById(R.id.et_username);
 		et_psw = (EditText) findViewById(R.id.et_psw);
@@ -41,7 +46,6 @@ public class RegisterActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
 				register();
 			}
 		});
@@ -88,7 +92,6 @@ public class RegisterActivity extends BaseActivity {
 
 			@Override
 			public void onSuccess() {
-				// TODO Auto-generated method stub
 				progress.dismiss();
 				showToast("注册成功");
 				// 将设备与username进行绑定
@@ -105,7 +108,6 @@ public class RegisterActivity extends BaseActivity {
 
 			@Override
 			public void onFailure(int arg0, String arg1) {
-				// TODO Auto-generated method stub
 				BmobLog.i(arg1);
 				showToast("注册失败:" + arg1);
 				progress.dismiss();

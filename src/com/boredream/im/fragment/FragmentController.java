@@ -22,9 +22,9 @@ public class FragmentController {
 
 	private void initFragment() {
 		fragments = new ArrayList<Fragment>();
-		fragments.add(new HomeFragment());
-		fragments.add(new MessageFragment());
-		fragments.add(new SearchFragment());
+		fragments.add(new RecentFragment());
+		fragments.add(new ContactFragment());
+		fragments.add(new UserFragment());
 		
 		FragmentTransaction ft = fm.beginTransaction();
 		for(Fragment fragment : fragments) {

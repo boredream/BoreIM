@@ -4,11 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <include layout="@layout/include_titlebar" />
+
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="我的"
-        android:textColor="#232323"
-        android:textSize="16sp" />
+        android:id="@+id/tv_name"
+        style="@style/TextViewSubhead" />
+
+    <Button
+        android:id="@+id/btn_logout"
+        style="@style/ButtonPrimaryColor"
+        android:layout_margin="16dp"
+        android:text="登出登录" />
 
 </LinearLayout>
