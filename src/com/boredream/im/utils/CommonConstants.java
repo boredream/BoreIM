@@ -1,5 +1,6 @@
 package com.boredream.im.utils;
 
+
 public interface CommonConstants {
 
 	String SP_NAME = "bore_im_config";

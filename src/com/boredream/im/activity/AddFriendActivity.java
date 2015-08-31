@@ -123,7 +123,7 @@ public class AddFriendActivity extends BaseActivity implements OnClickListener,
 	public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 			long arg3) {
 		BmobChatUser user = (BmobChatUser) adapter.getItem(position);
-		Intent intent = new Intent(this, SetMyInfoActivity.class);
+		Intent intent = new Intent(this, UserInfoActivity.class);
 		intent.putExtra("from", "add");
 		intent.putExtra("username", user.getUsername());
 		startActivity(intent);

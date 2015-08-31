@@ -7,7 +7,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 
 public class ImageOptHelper {
 	
-	public static DisplayImageOptions getImgOptions() {
+	public static DisplayImageOptions getDefOptions() {
 		DisplayImageOptions imgOptions = new DisplayImageOptions.Builder()
 			.cacheOnDisk(true)
 			.cacheInMemory(true)

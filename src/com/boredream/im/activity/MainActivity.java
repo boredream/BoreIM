@@ -44,20 +44,20 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
+
 		refreshNewMsg(null, false);
 		refreshInvite(null, false);
-		
+
 		// 监听推送的消息
 		MyMessageReceiver.ehList.add(this);
 		// 清空
 		MyMessageReceiver.mNewNum = 0;
 	}
-	
+
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
+
 		// 监听推送的消息
 		MyMessageReceiver.ehList.remove(this);
 	}
@@ -101,9 +101,10 @@ public class MainActivity extends FragmentActivity implements
 	 * 刷新界面
 	 */
 	private void refreshNewMsg(BmobMsg message, boolean needVoice) {
-		if(needVoice) {
+		if (needVoice) {
 			// 声音提示
-			boolean isAllow = BaseApplication.mInstance.getSpUtil().isAllowVoice();
+			boolean isAllow = BaseApplication.mInstance.getSpUtil()
+					.isAllowVoice();
 			if (isAllow) {
 				BaseApplication.mInstance.getMediaPlayer().start();
 			}
@@ -122,25 +123,26 @@ public class MainActivity extends FragmentActivity implements
 			// 移除提示
 			hideNewsIcon(0);
 		}
-		
+
 		if (currentTabIndex == 0) {
 			// 更新最近聊天页面
 			RecentFragment homeFrag = (RecentFragment) fc.getFragment(0);
 			homeFrag.refresh();
 		}
 	}
-	
+
 	/**
 	 * 刷新好友请求
 	 */
 	private void refreshInvite(BmobInvitation message, boolean needVoice) {
-		if(needVoice) {
-			boolean isAllow = BaseApplication.mInstance.getSpUtil().isAllowVoice();
+		if (needVoice) {
+			boolean isAllow = BaseApplication.mInstance.getSpUtil()
+					.isAllowVoice();
 			if (isAllow) {
 				BaseApplication.mInstance.getMediaPlayer().start();
 			}
 		}
-		
+
 		if (BmobDB.create(this).hasNewInvite()) {
 			// 添加提示
 			showNewsIcon(1);
@@ -148,7 +150,7 @@ public class MainActivity extends FragmentActivity implements
 			// 移除提示
 			hideNewsIcon(1);
 		}
-		
+
 		if (currentTabIndex == 1) {
 			// 更新好友
 			ContactFragment contactFrag = (ContactFragment) fc.getFragment(1);
@@ -198,7 +200,7 @@ public class MainActivity extends FragmentActivity implements
 	private void showToast(String text) {
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	private void showLog(String text) {
 		Log.i("DDD", text);
 	}

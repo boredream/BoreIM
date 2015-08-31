@@ -16,6 +16,7 @@ import cn.bmob.im.db.BmobDB;
 import com.boredream.im.R;
 import com.boredream.im.utils.DateUtils;
 import com.boredream.im.utils.EmotionUtils;
+import com.boredream.im.utils.ImageOptHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -71,7 +72,8 @@ public class MessageRecentAdapter extends BaseAdapter {
 		BmobRecent item = getItem(position);
 		// Ìî³äÊý¾Ý
 		String avatar = item.getAvatar();
-		ImageLoader.getInstance().displayImage(avatar, holder.iv_recent_avatar);
+		ImageLoader.getInstance().displayImage(avatar, holder.iv_recent_avatar, 
+				ImageOptHelper.getAvatarOptions());
 
 		holder.tv_recent_name.setText(item.getUserName());
 		

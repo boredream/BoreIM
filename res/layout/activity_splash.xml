@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-    
-    <TextView 
-        style="@style/TextViewHeadline"
-        />
-    
+    android:background="@color/primary" >
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tv1"
+        style="@style/TextViewHeadline"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        android:text="即时聊天DEMO"
+        android:textColor="@color/white" />
+
+    <TextView
+        style="@style/TextViewBody"
+        android:layout_below="@id/tv1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="by boredream"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

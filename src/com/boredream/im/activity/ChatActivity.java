@@ -763,7 +763,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 		super.onPause();
 		MyMessageReceiver.ehList.remove(this);// 监听推送的消息
 		
-		if(NewRecordPlayClickListener.currentPlayListener != null) {
+		if(NewRecordPlayClickListener.currentPlayListener != null
+				&& NewRecordPlayClickListener.isPlaying) {
 			NewRecordPlayClickListener.currentPlayListener.stopPlayRecord();
 			NewRecordPlayClickListener.currentPlayListener = null;
 		}

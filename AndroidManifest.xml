@@ -89,7 +89,7 @@
         <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.AddFriendActivity" />
         <activity android:name=".activity.NewFriendActivity" />
-        <activity android:name=".activity.SetMyInfoActivity" />
+        <activity android:name=".activity.UserInfoActivity" />
 
         <!-- IM聊天所需的Push start -->
         <service

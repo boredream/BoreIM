@@ -31,9 +31,10 @@ public class ImageUtils {
 	public static final int CROP_IMAGE = 5003;
 	public static Uri imageUriFromCamera;
 	public static Uri cropImageUri;
+	public static File cropImageFile;
 
 	public static void openCameraImage(final Activity activity) {
-		ImageUtils.imageUriFromCamera = ImageUtils.createImagePathUri(activity);
+		ImageUtils.imageUriFromCamera = ImageUtils.createImagePath(activity);
 		
 		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// MediaStore.EXTRA_OUTPUT参数不设置时,系统会自动生成一个uri,但是只会返回一个缩略图
@@ -51,7 +52,7 @@ public class ImageUtils {
 	}
 	
 	public static void cropImage(Activity activity, Uri srcUri) {
-		ImageUtils.cropImageUri = ImageUtils.createImagePathUri(activity);
+		ImageUtils.cropImageUri = ImageUtils.createImagePath(activity);
 		
 		Intent intent = new Intent("com.android.camera.action.CROP");
 		intent.setDataAndType(srcUri, "image/*");
@@ -90,7 +91,7 @@ public class ImageUtils {
 	 * @param context
 	 * @return 图片的uri
 	 */
-	private static Uri createImagePathUri(Context context) {
+	private static Uri createImageUri(Context context) {
 		Uri imageFilePath = null;
 		String status = Environment.getExternalStorageState();
 		SimpleDateFormat timeFormatter = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CHINA);
@@ -113,10 +114,60 @@ public class ImageUtils {
 	}
 	
 	/**
+	 * 创建一条图片地址uri,用于保存拍照后的照片(先生成文件)
+	 * 
+	 * @param context
+	 * @return 图片的uri
+	 * @throws IOException 
+	 */
+	private static Uri createImagePath(Context context) {
+		Uri imageFilePath = null;
+		// 未装载sd卡
+		if(!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+			return imageFilePath;
+		}
+		
+		// 图片储存目录
+		String imgPath = Environment.getExternalStorageDirectory() 
+				+ File.separator + "boredream" + File.separator + "img";
+		File dir = new File(imgPath);
+		if(!dir.exists()) {
+			dir.mkdirs();
+		}
+		
+		// 文件名
+		long time = System.currentTimeMillis();
+		String imageName = "img" + time + ".jpg";
+		
+		Uri fileUri = null;
+		try {
+			// 图片文件
+			cropImageFile = new File(dir, imageName);
+			if(!cropImageFile.exists()) {
+				cropImageFile.createNewFile();
+				// 根据文件生成uri
+				fileUri = Uri.fromFile(cropImageFile);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return fileUri;
+	}
+	
+	/**
 	 * 删除一条图片
 	 */
 	public static void deleteImageUri(Context context, Uri uri) {
-		context.getContentResolver().delete(uri, null, null);
+		if(uri != null) {
+			context.getContentResolver().delete(uri, null, null);
+		}
+	}
+	
+	public static void deleteCropImageFile() {
+		if(cropImageFile != null && cropImageFile.exists()) {
+			cropImageFile.delete();
+		}
 	}
 	
 	/**

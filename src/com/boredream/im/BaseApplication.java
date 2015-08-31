@@ -78,7 +78,7 @@ public class BaseApplication extends Application {
 				.threadPriority(Thread.NORM_PRIORITY - 2)
 				.diskCacheFileNameGenerator(new Md5FileNameGenerator())
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
-				.defaultDisplayImageOptions(ImageOptHelper.getImgOptions())
+				.defaultDisplayImageOptions(ImageOptHelper.getDefOptions())
 //				.imageDownloader(new HttpClientImageDownloader(
 //						context, new DefaultHttpClient(manager, params)))
 				.build();

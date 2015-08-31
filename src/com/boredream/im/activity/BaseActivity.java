@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -25,6 +24,7 @@ import com.boredream.im.R;
 import com.boredream.im.entity.User;
 import com.boredream.im.utils.CollectionUtils;
 import com.boredream.im.utils.CommonConstants;
+import com.boredream.im.utils.DialogUtils;
 import com.boredream.im.utils.TitleBuilder;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -53,7 +53,7 @@ public abstract class BaseActivity extends Activity {
 
 		application = (BaseApplication) getApplication();
 		sp = getSharedPreferences(CommonConstants.SP_NAME, MODE_PRIVATE);
-		progressDialog = new ProgressDialog(this);
+		progressDialog = DialogUtils.createLoadingDialog(this);
 
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		imageLoader = ImageLoader.getInstance();

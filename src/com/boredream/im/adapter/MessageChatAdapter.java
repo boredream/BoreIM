@@ -21,10 +21,11 @@ import cn.bmob.im.config.BmobConfig;
 import cn.bmob.im.inteface.DownloadListener;
 
 import com.boredream.im.R;
-import com.boredream.im.activity.SetMyInfoActivity;
+import com.boredream.im.activity.UserInfoActivity;
 import com.boredream.im.listener.NewRecordPlayClickListener;
 import com.boredream.im.utils.DateUtils;
 import com.boredream.im.utils.EmotionUtils;
+import com.boredream.im.utils.ImageOptHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -135,11 +136,12 @@ public class MessageChatAdapter extends BaseAdapter {
 		final BmobMsg item = getItem(position);
 		// 点击头像进入个人资料
 		String avatar = item.getBelongAvatar();
-		ImageLoader.getInstance().displayImage(avatar, holder.iv_avatar);
+		ImageLoader.getInstance().displayImage(avatar, holder.iv_avatar, 
+				ImageOptHelper.getAvatarOptions());
 		holder.iv_avatar.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(context, SetMyInfoActivity.class);
+				Intent intent = new Intent(context, UserInfoActivity.class);
 				if(isSend) {
 					intent.putExtra("from", "me");
 				} else {
