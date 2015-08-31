@@ -18,7 +18,7 @@ import com.boredream.im.BaseApplication;
 import com.boredream.im.R;
 
 /**
- * Òıµ¼Ò³
+ * å¼•å¯¼é¡µ
  */
 public class SplashActivity extends BaseActivity {
 
@@ -26,22 +26,22 @@ public class SplashActivity extends BaseActivity {
 	private static final int GO_LOGIN = 200;
 	private static final long DELAY_TIME = 1000;
 
-	// ¶¨Î»»ñÈ¡µ±Ç°ÓÃ»§µÄµØÀíÎ»ÖÃ
+	// å®šä½è·å–å½“å‰ç”¨æˆ·çš„åœ°ç†ä½ç½®
 	private LocationClient mLocationClient;
 
-	private BaiduReceiver mReceiver;// ×¢²á¹ã²¥½ÓÊÕÆ÷£¬ÓÃÓÚ¼àÌıÍøÂçÒÔ¼°ÑéÖ¤key
+	private BaiduReceiver mReceiver;// æ³¨å†Œå¹¿æ’­æ¥æ”¶å™¨ï¼Œç”¨äºç›‘å¬ç½‘ç»œä»¥åŠéªŒè¯key
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
 		
-		// ¿ÉÉèÖÃµ÷ÊÔÄ£Ê½£¬µ±ÎªtrueµÄÊ±ºò£¬»áÔÚlogcatµÄBmobChatÏÂÊä³öÒ»Ğ©ÈÕÖ¾£¬°üÀ¨ÍÆËÍ·şÎñÊÇ·ñÕı³£ÔËĞĞ£¬Èç¹û·şÎñ¶Ë·µ»Ø´íÎó£¬Ò²»áÒ»²¢´òÓ¡³öÀ´¡£·½±ã¿ª·¢Õßµ÷ÊÔ
+		// å¯è®¾ç½®è°ƒè¯•æ¨¡å¼ï¼Œå½“ä¸ºtrueçš„æ—¶å€™ï¼Œä¼šåœ¨logcatçš„BmobChatä¸‹è¾“å‡ºä¸€äº›æ—¥å¿—ï¼ŒåŒ…æ‹¬æ¨é€æœåŠ¡æ˜¯å¦æ­£å¸¸è¿è¡Œï¼Œå¦‚æœæœåŠ¡ç«¯è¿”å›é”™è¯¯ï¼Œä¹Ÿä¼šä¸€å¹¶æ‰“å°å‡ºæ¥ã€‚æ–¹ä¾¿å¼€å‘è€…è°ƒè¯•
 		BmobChat.DEBUG_MODE = true;
 		
-		// ¿ªÆô¶¨Î»
+		// å¼€å¯å®šä½
 		initLocClient();
-		// ×¢²áµØÍ¼ SDK ¹ã²¥¼àÌıÕß
+		// æ³¨å†Œåœ°å›¾ SDK å¹¿æ’­ç›‘å¬è€…
 		IntentFilter iFilter = new IntentFilter();
 		iFilter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR);
 		iFilter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);
@@ -49,7 +49,7 @@ public class SplashActivity extends BaseActivity {
 		registerReceiver(mReceiver, iFilter);
 
 		if (userManager.getCurrentUser() != null) {
-			// Ã¿´Î×Ô¶¯µÇÂ½µÄÊ±ºò¾ÍĞèÒª¸üĞÂÏÂµ±Ç°Î»ÖÃºÍºÃÓÑµÄ×ÊÁÏ£¬ÒòÎªºÃÓÑµÄÍ·Ïñ£¬êÇ³ÆÉ¶µÄÊÇ¾­³£±ä¶¯µÄ
+			// æ¯æ¬¡è‡ªåŠ¨ç™»é™†çš„æ—¶å€™å°±éœ€è¦æ›´æ–°ä¸‹å½“å‰ä½ç½®å’Œå¥½å‹çš„èµ„æ–™ï¼Œå› ä¸ºå¥½å‹çš„å¤´åƒï¼Œæ˜µç§°å•¥çš„æ˜¯ç»å¸¸å˜åŠ¨çš„
 			updateUserInfos();
 			mHandler.sendEmptyMessageDelayed(GO_HOME, DELAY_TIME);
 		} else {
@@ -59,15 +59,15 @@ public class SplashActivity extends BaseActivity {
 	}
 
 	/**
-	 * ¿ªÆô¶¨Î»£¬¸üĞÂµ±Ç°ÓÃ»§µÄ¾­Î³¶È×ø±ê
+	 * å¼€å¯å®šä½ï¼Œæ›´æ–°å½“å‰ç”¨æˆ·çš„ç»çº¬åº¦åæ ‡
 	 */
 	private void initLocClient() {
 		mLocationClient = BaseApplication.mInstance.mLocationClient;
 		LocationClientOption option = new LocationClientOption();
-		option.setLocationMode(LocationMode.Hight_Accuracy);// ÉèÖÃ¶¨Î»Ä£Ê½:¸ß¾«¶ÈÄ£Ê½
-		option.setCoorType("bd09ll"); // ÉèÖÃ×ø±êÀàĞÍ:°Ù¶È¾­Î³¶È
-		option.setScanSpan(1000);// ÉèÖÃ·¢Æğ¶¨Î»ÇëÇóµÄ¼ä¸ôÊ±¼äÎª1000ms:µÍÓÚ1000ÎªÊÖ¶¯¶¨Î»Ò»´Î£¬´óÓÚ»òµÈÓÚ1000ÔòÎª¶¨Ê±¶¨Î»
-		option.setIsNeedAddress(false);// ²»ĞèÒª°üº¬µØÖ·ĞÅÏ¢
+		option.setLocationMode(LocationMode.Hight_Accuracy);// è®¾ç½®å®šä½æ¨¡å¼:é«˜ç²¾åº¦æ¨¡å¼
+		option.setCoorType("bd09ll"); // è®¾ç½®åæ ‡ç±»å‹:ç™¾åº¦ç»çº¬åº¦
+		option.setScanSpan(1000);// è®¾ç½®å‘èµ·å®šä½è¯·æ±‚çš„é—´éš”æ—¶é—´ä¸º1000ms:ä½äº1000ä¸ºæ‰‹åŠ¨å®šä½ä¸€æ¬¡ï¼Œå¤§äºæˆ–ç­‰äº1000åˆ™ä¸ºå®šæ—¶å®šä½
+		option.setIsNeedAddress(false);// ä¸éœ€è¦åŒ…å«åœ°å€ä¿¡æ¯
 		mLocationClient.setLocOption(option);
 		mLocationClient.start();
 	}
@@ -90,23 +90,23 @@ public class SplashActivity extends BaseActivity {
 	};
 
 	/**
-	 * ¹¹Ôì¹ã²¥¼àÌıÀà£¬¼àÌı SDK key ÑéÖ¤ÒÔ¼°ÍøÂçÒì³£¹ã²¥
+	 * æ„é€ å¹¿æ’­ç›‘å¬ç±»ï¼Œç›‘å¬ SDK key éªŒè¯ä»¥åŠç½‘ç»œå¼‚å¸¸å¹¿æ’­
 	 */
 	public class BaiduReceiver extends BroadcastReceiver {
 		public void onReceive(Context context, Intent intent) {
 			String s = intent.getAction();
 			if (s.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR)) {
-				showToast("key ÑéÖ¤³ö´í! ÇëÔÚ AndroidManifest.xml ÎÄ¼şÖĞ¼ì²é key ÉèÖÃ");
+				showToast("key éªŒè¯å‡ºé”™! è¯·åœ¨ AndroidManifest.xml æ–‡ä»¶ä¸­æ£€æŸ¥ key è®¾ç½®");
 			} else if (s
 					.equals(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR)) {
-				showToast("µ±Ç°ÍøÂçÁ¬½Ó²»ÎÈ¶¨£¬Çë¼ì²éÄúµÄÍøÂçÉèÖÃ!");
+				showToast("å½“å‰ç½‘ç»œè¿æ¥ä¸ç¨³å®šï¼Œè¯·æ£€æŸ¥æ‚¨çš„ç½‘ç»œè®¾ç½®!");
 			}
 		}
 	}
 
 	@Override
 	protected void onDestroy() {
-		// ÍË³öÊ±Ïú»Ù¶¨Î»
+		// é€€å‡ºæ—¶é”€æ¯å®šä½
 		if (mLocationClient != null && mLocationClient.isStarted()) {
 			mLocationClient.stop();
 		}

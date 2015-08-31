@@ -54,12 +54,12 @@ import com.boredream.im.R;
 import com.boredream.im.adapter.EmotionGvAdapter;
 import com.boredream.im.adapter.EmotionPagerAdapter;
 import com.boredream.im.adapter.MessageChatAdapter;
+import com.boredream.im.listener.NewRecordPlayClickListener;
 import com.boredream.im.receiver.MyMessageReceiver;
 import com.boredream.im.utils.CommonUtils;
 import com.boredream.im.utils.DisplayUtils;
 import com.boredream.im.utils.EmotionUtils;
 import com.boredream.im.utils.ImageUtils;
-import com.boredream.im.utils.NewRecordPlayClickListener;
 
 /**
  * ¡ƒÃÏΩÁ√Ê

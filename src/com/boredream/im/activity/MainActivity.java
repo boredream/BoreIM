@@ -47,7 +47,7 @@ public class MainActivity extends FragmentActivity implements
 		
 		refreshNewMsg(null, false);
 		refreshInvite(null, false);
-				
+		
 		// 监听推送的消息
 		MyMessageReceiver.ehList.add(this);
 		// 清空

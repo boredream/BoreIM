@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,9 +22,9 @@ import cn.bmob.im.inteface.DownloadListener;
 
 import com.boredream.im.R;
 import com.boredream.im.activity.SetMyInfoActivity;
+import com.boredream.im.listener.NewRecordPlayClickListener;
 import com.boredream.im.utils.DateUtils;
 import com.boredream.im.utils.EmotionUtils;
-import com.boredream.im.utils.NewRecordPlayClickListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -202,7 +203,19 @@ public class MessageChatAdapter extends BaseAdapter {
 			break;
 		case BmobConfig.TYPE_VOICE:// 语音消息
 			holder.item_chat_voice.setVisibility(View.VISIBLE);
-			holder.iv_voice.setImageResource(isSend ? R.drawable.voice_right_3 : R.drawable.voice_left_3);
+			// 如果当前正在播放语音,且正在播放,且正在播放的是当前item对应的数据,则继续显示动画
+			if(NewRecordPlayClickListener.currentMsg != null 
+					&& NewRecordPlayClickListener.isPlaying
+					&& NewRecordPlayClickListener.currentMsg.hashCode() == item.hashCode()) {
+				holder.iv_voice.setImageResource(isSend ? R.anim.anim_chat_voice_right
+						: R.anim.anim_chat_voice_left);
+				AnimationDrawable anim = (AnimationDrawable) holder.iv_voice.getDrawable();
+				if (anim != null) {
+					anim.start();
+				}
+			} else {
+				holder.iv_voice.setImageResource(isSend ? R.drawable.voice_right_3 : R.drawable.voice_left_3);
+			}
 			
 			// 播放语音文件
 			holder.item_chat_voice.setOnClickListener(new NewRecordPlayClickListener(
