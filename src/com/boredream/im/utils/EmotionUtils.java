@@ -101,7 +101,7 @@ public class EmotionUtils implements Serializable {
 			Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), imgRes);
 
 			if (bitmap != null) {
-				int size = (int) tv.getTextSize();
+				int size = (int) (tv.getTextSize() * 1.5);
 				bitmap = Bitmap.createScaledBitmap(bitmap, size, size, true);
 
 				ImageSpan imageSpan = new ImageSpan(context, bitmap);

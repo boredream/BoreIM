@@ -48,6 +48,7 @@
             android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/ll_msg_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
@@ -69,6 +70,7 @@
             <include
                 android:id="@+id/item_chat_voice"
                 layout="@layout/item_chat_voice_sent"
+                android:minWidth="80dp"
                 android:visibility="gone" />
         </LinearLayout>
 

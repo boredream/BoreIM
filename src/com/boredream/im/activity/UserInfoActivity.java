@@ -49,7 +49,7 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_set_info);
-		from = getIntent().getStringExtra("from");//me add other
+		from = getIntent().getStringExtra("from");// me add other
 		username = getIntent().getStringExtra("username");
 		initView();
 	}
@@ -81,7 +81,7 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 			initBackTitle("详细资料");
 			iv_nickarraw.setVisibility(View.INVISIBLE);
 			iv_arraw.setVisibility(View.INVISIBLE);
-			//不管对方是不是你的好友，均可以发送消息--BmobIM_V1.1.2修改
+			// 不管对方是不是你的好友，均可以发送消息--BmobIM_V1.1.2修改
 			btn_chat.setVisibility(View.VISIBLE);
 			btn_chat.setOnClickListener(this);
 			if (from.equals("add")) {// 从附近的人列表添加好友--因为获取附近的人的方法里面有是否显示好友的情况，因此在这里需要判断下这个用户是否是自己的好友
@@ -123,10 +123,11 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 
 	private void updateUser(User user) {
 		// 更改
-		imageLoader.displayImage(user.getAvatar(), iv_set_avator, ImageOptHelper.getAvatarOptions());
+		imageLoader.displayImage(user.getAvatar(), iv_set_avator,
+				ImageOptHelper.getAvatarOptions());
 		tv_set_name.setText(user.getUsername());
 		tv_set_nick.setText(user.getNick());
-		tv_set_gender.setText(user.getSex() == true ? "男" : "女");
+		tv_set_gender.setText(user.isSex() ? "男" : "女");
 	}
 
 	@Override
@@ -160,60 +161,57 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 			break;
 		}
 	}
-	
+
 	private void showImgPickDialog() {
-		new AlertDialog.Builder(this)
-			.setItems(new String[]{"拍照", "相册"}, 
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							switch (which) {
-							case 0:
-								ImageUtils.openCameraImage(UserInfoActivity.this);
-								break;
-							case 1:
-								ImageUtils.openLocalImage(UserInfoActivity.this);
-								break;
-							}
-						}
-					})
-			.show();
-	}
-	String[] sexs = new String[]{ "男", "女" };
-	private void showSexChooseDialog() {
-		new AlertDialog.Builder(this)
-		.setTitle("单选框")
-		.setIcon(android.R.drawable.ic_dialog_info)
-		.setSingleChoiceItems(sexs, 0,
+		new AlertDialog.Builder(this).setItems(new String[] { "拍照", "相册" },
 				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,
-							int which) {
-						BmobLog.i("点击的是"+sexs[which]);
-						updateInfo(which);
-						dialog.dismiss();
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case 0:
+							ImageUtils.openCameraImage(UserInfoActivity.this);
+							break;
+						case 1:
+							ImageUtils.openLocalImage(UserInfoActivity.this);
+							break;
+						}
 					}
-				})
-		.setNegativeButton("取消", null)
-		.show();
+				}).show();
 	}
 
-	
+	String[] sexs = new String[] { "男", "女" };
+
+	private void showSexChooseDialog() {
+		new AlertDialog.Builder(this)
+				.setTitle("单选框")
+				.setIcon(android.R.drawable.ic_dialog_info)
+				.setSingleChoiceItems(sexs, 0,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								BmobLog.i("点击的是" + sexs[which]);
+								updateInfo(which);
+								dialog.dismiss();
+							}
+						}).setNegativeButton("取消", null).show();
+	}
+
 	/**
 	 * 修改资料
 	 */
 	private void updateInfo(int which) {
 		final User user = userManager.getCurrentUser(User.class);
-		BmobLog.i("updateInfo 性别："+user.getSex());
+		BmobLog.i("updateInfo 性别：" + user.isSex());
 		user.setSex(which == 0);
-		
+
 		user.update(this, new UpdateListener() {
 
 			@Override
 			public void onSuccess() {
 				showToast("修改成功");
 				final User u = userManager.getCurrentUser(User.class);
-				BmobLog.i("修改成功后的sex = "+u.getSex());
-				tv_set_gender.setText(user.getSex() == true ? "男" : "女");
+				BmobLog.i("修改成功后的sex = " + u.isSex());
+				tv_set_gender.setText(user.isSex() ? "男" : "女");
 			}
 
 			@Override
@@ -222,6 +220,7 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 			}
 		});
 	}
+
 	/**
 	 * 添加好友请求
 	 */
@@ -252,7 +251,7 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
+
 		switch (requestCode) {
 		case ImageUtils.GET_IMAGE_BY_CAMERA:
 			if (resultCode == RESULT_OK) {
@@ -282,31 +281,30 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 
 		}
 	}
-	
+
 	private void showCropImageDialog(final Uri imgUri) {
-		DialogUtils.showConfirmDialog(this, "提示", "是否对图片进行裁剪", 
+		DialogUtils.showConfirmDialog(this, "提示", "是否对图片进行裁剪",
 				new DialogInterface.OnClickListener() {
-			
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// 确认对图片进行裁剪
 						ImageUtils.cropImage(UserInfoActivity.this, imgUri);
 					}
-				},
-				new DialogInterface.OnClickListener() {
-					
+				}, new DialogInterface.OnClickListener() {
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// 取消则直接使用图片
 						uploadAvatar(imgUri);
 					}
-		});
+				});
 	}
 
 	private void uploadAvatar(Uri imgUri) {
 		progressDialog.setTitle("正在上传头像");
 		progressDialog.show();
-		
+
 		final String path = ImageUtils.getImageAbsolutePath(this, imgUri);
 		BmobLog.i("头像地址：" + path);
 		final BmobFile bmobFile = new BmobFile(new File(path));
@@ -317,7 +315,7 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 				String url = bmobFile.getFileUrl(UserInfoActivity.this);
 				// 更新BmobUser对象
 				updateUserAvatar(url);
-				
+
 				showLog("上传头像 path=" + path + " 成功");
 			}
 
@@ -343,8 +341,9 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 		user.update(this, new UpdateListener() {
 			@Override
 			public void onSuccess() {
-				imageLoader.displayImage(url, iv_set_avator, ImageOptHelper.getAvatarOptions());
-				
+				imageLoader.displayImage(url, iv_set_avator,
+						ImageOptHelper.getAvatarOptions());
+
 				showToast("头像更新成功！");
 				progressDialog.dismiss();
 				ImageUtils.deleteCropImageFile();
@@ -358,7 +357,5 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 			}
 		});
 	}
-
-	
 
 }

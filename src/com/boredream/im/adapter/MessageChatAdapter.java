@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import cn.bmob.im.BmobDownloadManager;
@@ -24,6 +26,7 @@ import com.boredream.im.R;
 import com.boredream.im.activity.UserInfoActivity;
 import com.boredream.im.listener.NewRecordPlayClickListener;
 import com.boredream.im.utils.DateUtils;
+import com.boredream.im.utils.DisplayUtils;
 import com.boredream.im.utils.EmotionUtils;
 import com.boredream.im.utils.ImageOptHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -159,16 +162,22 @@ public class MessageChatAdapter extends BaseAdapter {
 		if(isSend && getItemViewType(position) != TYPE_SEND_IMAGE) {
 			switch (item.getStatus()) {
 			case BmobConfig.STATUS_SEND_START:// 开始发送
+				Log.i("adapter", "开始发送 " + item.getContent());
+				
 				holder.progress_load.setVisibility(View.VISIBLE);
 				holder.iv_fail_resend.setVisibility(View.GONE);
 				holder.tv_send_status.setVisibility(View.GONE);
 				break;
 			case BmobConfig.STATUS_SEND_FAIL:// 服务器无响应或者查询失败等原因造成的发送失败，均需要重发
+				Log.i("adapter", "发送失败 " + item.getContent());
+				
 				holder.progress_load.setVisibility(View.GONE);
 				holder.iv_fail_resend.setVisibility(View.VISIBLE);
 				holder.tv_send_status.setVisibility(View.GONE);
 				break;
 			case BmobConfig.STATUS_SEND_SUCCESS:// 发送成功
+				Log.i("adapter", "发送成功" + item.getContent());
+				
 				holder.progress_load.setVisibility(View.GONE);
 				holder.iv_fail_resend.setVisibility(View.GONE);
 				holder.tv_send_status.setVisibility(View.VISIBLE);
@@ -176,6 +185,8 @@ public class MessageChatAdapter extends BaseAdapter {
 				holder.tv_send_status.setText("已发送");
 				break;
 			case BmobConfig.STATUS_SEND_RECEIVERED:// 对方已接收到
+				Log.i("adapter", "对方已接收" + item.getContent());
+				
 				holder.progress_load.setVisibility(View.GONE);
 				holder.iv_fail_resend.setVisibility(View.GONE);
 				holder.tv_send_status.setVisibility(View.VISIBLE);
@@ -183,6 +194,19 @@ public class MessageChatAdapter extends BaseAdapter {
 				holder.tv_send_status.setText("已阅读");
 				break;
 			}
+		}
+		
+		// 发送,且是失败的,可以点击重发
+		if(isSend && item.getStatus() == BmobConfig.STATUS_SEND_FAIL) {
+			// 重发回调
+			holder.iv_fail_resend.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if(onItemMultiClickListener != null) {
+						onItemMultiClickListener.onItemResendClick(item);
+					}
+				}
+			});
 		}
 		
 		// 根据类型显示内容
@@ -242,13 +266,27 @@ public class MessageChatAdapter extends BaseAdapter {
 			break;
 		}
 		
+		holder.ll_msg_body.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(onItemMultiClickListener != null) {
+					onItemMultiClickListener.onItemClick(item);
+				}
+			}
+		});
+		
 		return convertView;
 	}
 	
 	private void setAudioWidth(String secondStr) {
 		try {
 			int seconds = Integer.parseInt(secondStr);
-			holder.item_chat_voice.getLayoutParams().width = seconds * 50;
+			int width = seconds * 50;
+			// min width
+			if(width < DisplayUtils.dp2px(context, 50)) {
+				width = DisplayUtils.dp2px(context, 50);
+			}
+			holder.item_chat_voice.getLayoutParams().width = width;
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		}
@@ -358,6 +396,7 @@ public class MessageChatAdapter extends BaseAdapter {
 		holder.iv_fail_resend = (ImageView) convertView.findViewById(R.id.iv_fail_resend);
 		holder.tv_send_status = (TextView) convertView.findViewById(R.id.tv_send_status);
 		holder.progress_load = (ProgressBar) convertView.findViewById(R.id.progress_load);
+		holder.ll_msg_body = (LinearLayout) convertView.findViewById(R.id.ll_msg_body);
 		holder.item_chat_image = convertView.findViewById(R.id.item_chat_image);
 		holder.iv_picture = (ImageView) convertView.findViewById(R.id.iv_picture);
 		holder.item_chat_message = convertView.findViewById(R.id.item_chat_message);
@@ -373,6 +412,7 @@ public class MessageChatAdapter extends BaseAdapter {
 		public ImageView iv_fail_resend;
 		public TextView tv_send_status;
 		public ProgressBar progress_load;
+		public LinearLayout ll_msg_body;
 		public View item_chat_image;
 		public ImageView iv_picture;
 		public View item_chat_message;
@@ -381,6 +421,25 @@ public class MessageChatAdapter extends BaseAdapter {
 		public ImageView iv_voice;
 		public TextView tv_voice_length;
 		public ImageView iv_avatar;
+	}
+	
+	
+	private OnItemMultiClickListener onItemMultiClickListener;
+	
+	public void setOnItemMultiClickListener(
+			OnItemMultiClickListener onItemMultiClickListener) {
+		this.onItemMultiClickListener = onItemMultiClickListener;
+	}
+
+	public interface OnItemMultiClickListener {
+		/**
+		 * 整个item被点击
+		 */
+		void onItemClick(BmobMsg msg);
+		/**
+		 * 重发按钮被点击
+		 */
+		void onItemResendClick(BmobMsg msg);
 	}
 
 }

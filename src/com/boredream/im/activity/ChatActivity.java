@@ -54,6 +54,7 @@ import com.boredream.im.R;
 import com.boredream.im.adapter.EmotionGvAdapter;
 import com.boredream.im.adapter.EmotionPagerAdapter;
 import com.boredream.im.adapter.MessageChatAdapter;
+import com.boredream.im.adapter.MessageChatAdapter.OnItemMultiClickListener;
 import com.boredream.im.listener.NewRecordPlayClickListener;
 import com.boredream.im.receiver.MyMessageReceiver;
 import com.boredream.im.utils.CommonUtils;
@@ -65,7 +66,7 @@ import com.boredream.im.utils.ImageUtils;
  * 聊天界面
  */
 @SuppressLint("ClickableViewAccessibility")
-public class ChatActivity extends BaseActivity implements OnClickListener, EventListener {
+public class ChatActivity extends BaseActivity implements OnClickListener, EventListener, OnItemMultiClickListener {
 
 	private Button btn_chat_emo, btn_chat_send, btn_chat_add, btn_chat_keyboard, btn_speak, btn_chat_voice;
 
@@ -241,6 +242,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 		} else {
 			mAdapter = new MessageChatAdapter(this, initMsgData());
 			mListView.setAdapter(mAdapter);
+			mAdapter.setOnItemMultiClickListener(this);
 		}
 	}
 
@@ -331,11 +333,22 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 			}
 		});
 	}
+	
+
+	@Override
+	public void onItemClick(BmobMsg msg) {
+		
+	}
+
+	@Override
+	public void onItemResendClick(BmobMsg msg) {
+		showResendDialog(msg);
+	}
 
 	/**
 	 * 显示重发按钮 showResendDialog
 	 */
-	public void showResendDialog(final View parentV, View v, final Object values) {
+	public void showResendDialog(final BmobMsg msg) {
 		new AlertDialog.Builder(this)
 			.setTitle("提示")
 			.setMessage("确定重发该消息?")
@@ -343,11 +356,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 			.setPositiveButton("确定", new DialogInterface.OnClickListener(){
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					if (((BmobMsg) values).getMsgType() == BmobConfig.TYPE_IMAGE
-							|| ((BmobMsg) values).getMsgType() == BmobConfig.TYPE_VOICE) {// 图片和语音类型的采用
-						resendFileMsg(parentV, values);
+					if (msg.getMsgType() == BmobConfig.TYPE_IMAGE
+							|| msg.getMsgType() == BmobConfig.TYPE_VOICE) {// 图片和语音类型的采用
+						resendFileMsg(msg);
 					} else {
-						resendTextMsg(parentV, values);
+						resendTextMsg(msg);
 					}
 				}
 			})
@@ -357,89 +370,51 @@ public class ChatActivity extends BaseActivity implements OnClickListener, Event
 	/**
 	 * 重发文本消息
 	 */
-	private void resendTextMsg(final View parentV, final Object values) {
+	private void resendTextMsg(final BmobMsg msg) {
 		BmobChatManager.getInstance(ChatActivity.this).resendTextMessage(
-				targetUser, (BmobMsg) values, new PushListener() {
+				targetUser, msg, new PushListener() {
 
 					@Override
 					public void onSuccess() {
-
-						showLog("发送成功");
-						((BmobMsg) values)
-								.setStatus(BmobConfig.STATUS_SEND_SUCCESS);
-						parentV.findViewById(R.id.progress_load).setVisibility(
-								View.INVISIBLE);
-						parentV.findViewById(R.id.iv_fail_resend)
-								.setVisibility(View.INVISIBLE);
-						parentV.findViewById(R.id.tv_send_status)
-								.setVisibility(View.VISIBLE);
-						((TextView) parentV.findViewById(R.id.tv_send_status))
-								.setText("已发送");
+						showLog("重发成功" + msg);
+						msg.setStatus(BmobConfig.STATUS_SEND_SUCCESS);
+						mAdapter.notifyDataSetChanged();
 					}
 
 					@Override
 					public void onFailure(int arg0, String arg1) {
-
-						showLog("发送失败:" + arg1);
-						((BmobMsg) values)
-								.setStatus(BmobConfig.STATUS_SEND_FAIL);
-						parentV.findViewById(R.id.progress_load).setVisibility(
-								View.INVISIBLE);
-						parentV.findViewById(R.id.iv_fail_resend)
-								.setVisibility(View.VISIBLE);
-						parentV.findViewById(R.id.tv_send_status)
-								.setVisibility(View.INVISIBLE);
+						showLog("重发失败:" + arg1);
+						msg.setStatus(BmobConfig.STATUS_SEND_FAIL);
+						mAdapter.notifyDataSetChanged();
 					}
 				});
 		mAdapter.notifyDataSetChanged();
 	}
 
 	/**
-	 * 重发图片消息
+	 * 重发文件消息(图片和语音)
 	 */
-	private void resendFileMsg(final View parentV, final Object values) {
+	private void resendFileMsg(final BmobMsg msg) {
 		BmobChatManager.getInstance(ChatActivity.this).resendFileMessage(
-				targetUser, (BmobMsg) values, new UploadListener() {
+				targetUser, msg, new UploadListener() {
 
 					@Override
 					public void onStart(BmobMsg msg) {
-
+						showLog("开始重发" + msg);
 					}
 
 					@Override
 					public void onSuccess() {
-
-						((BmobMsg) values)
-								.setStatus(BmobConfig.STATUS_SEND_SUCCESS);
-						parentV.findViewById(R.id.progress_load).setVisibility(
-								View.INVISIBLE);
-						parentV.findViewById(R.id.iv_fail_resend)
-								.setVisibility(View.INVISIBLE);
-						if (((BmobMsg) values).getMsgType() == BmobConfig.TYPE_VOICE) {
-							parentV.findViewById(R.id.tv_send_status)
-									.setVisibility(View.GONE);
-							parentV.findViewById(R.id.tv_voice_length)
-									.setVisibility(View.VISIBLE);
-						} else {
-							parentV.findViewById(R.id.tv_send_status)
-									.setVisibility(View.VISIBLE);
-							((TextView) parentV
-									.findViewById(R.id.tv_send_status))
-									.setText("已发送");
-						}
+						showLog("重发成功" + msg);
+						msg.setStatus(BmobConfig.STATUS_SEND_SUCCESS);
+						mAdapter.notifyDataSetChanged();
 					}
 
 					@Override
 					public void onFailure(int arg0, String arg1) {
-
-						((BmobMsg) values)
-								.setStatus(BmobConfig.STATUS_SEND_FAIL);
-						parentV.findViewById(R.id.progress_load).setVisibility(
-								View.INVISIBLE);
-						parentV.findViewById(R.id.iv_fail_resend)
-								.setVisibility(View.VISIBLE);
-						parentV.findViewById(R.id.tv_send_status)
-								.setVisibility(View.INVISIBLE);
+						showLog("重发失败:" + arg1);
+						msg.setStatus(BmobConfig.STATUS_SEND_FAIL);
+						mAdapter.notifyDataSetChanged();
 					}
 				});
 		mAdapter.notifyDataSetChanged();
