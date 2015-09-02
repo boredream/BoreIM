@@ -13,11 +13,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cn.bmob.im.BmobUserManager;
-import cn.bmob.im.bean.BmobChatUser;
 
 import com.boredream.im.R;
 import com.boredream.im.activity.LoginActivity;
 import com.boredream.im.activity.UserInfoActivity;
+import com.boredream.im.entity.User;
 import com.boredream.im.utils.ImageOptHelper;
 import com.boredream.im.utils.TitleBuilder;
 
@@ -57,12 +57,11 @@ public class UserFragment extends BaseFragment implements OnClickListener {
 	
 	private void setData() {
 		BmobUserManager userManager = BmobUserManager.getInstance(activity);
-		BmobChatUser user = userManager.getCurrentUser();
+		User user = userManager.getCurrentUser(User.class);
 		
 		imageLoader.displayImage(user.getAvatar(), iv_avatar, ImageOptHelper.getAvatarOptions());
 		tv_name.setText(user.getUsername());
-		// TODO	tv_description.setText(text)
-		tv_description.setText("√ª¥Ì,Œ“æÕ «”Õ∑ª«≈Œ‚—Â◊Ê");
+		tv_description.setText(user.getDescription());
 	}
 	
 	@Override

@@ -90,6 +90,7 @@
         <activity android:name=".activity.AddFriendActivity" />
         <activity android:name=".activity.NewFriendActivity" />
         <activity android:name=".activity.UserInfoActivity" />
+        <activity android:name=".activity.UpdateEditInfoActivity" />
 
         <!-- IM聊天所需的Push start -->
         <service

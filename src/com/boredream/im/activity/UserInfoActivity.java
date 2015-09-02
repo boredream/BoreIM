@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import cn.bmob.im.BmobChatManager;
 import cn.bmob.im.inteface.MsgTag;
-import cn.bmob.im.util.BmobLog;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.PushListener;
@@ -35,11 +34,23 @@ import com.boredream.im.utils.ImageUtils;
  */
 public class UserInfoActivity extends BaseActivity implements OnClickListener {
 
-	private TextView tv_set_name, tv_set_nick, tv_set_gender;
-	private ImageView iv_set_avator, iv_arraw, iv_nickarraw;
-
-	private Button btn_chat, btn_add_friend;
-	private RelativeLayout layout_head, layout_nick, layout_gender;
+	// avatar
+	private RelativeLayout layout_head;
+	private ImageView iv_avator;
+	private ImageView iv_avator_arrow;
+	// name
+	private TextView tv_name;
+	// description
+	private RelativeLayout layout_description;
+	private TextView tv_description;
+	private ImageView iv_description_arrow;
+	// gender
+	private RelativeLayout layout_gender;
+	private TextView tv_gender;
+	private ImageView iv_gender_arrow;
+	// button
+	private Button btn_add_friend;
+	private Button btn_chat;
 
 	private String from = "";
 	private String username = "";
@@ -48,39 +59,51 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_set_info);
+		
+		setContentView(R.layout.activity_userinfo);
+		
 		from = getIntent().getStringExtra("from");// me add other
 		username = getIntent().getStringExtra("username");
+		
 		initView();
 	}
 
 	private void initView() {
-		iv_set_avator = (ImageView) findViewById(R.id.iv_set_avator);
-		iv_arraw = (ImageView) findViewById(R.id.iv_arraw);
-		iv_nickarraw = (ImageView) findViewById(R.id.iv_nickarraw);
-		tv_set_name = (TextView) findViewById(R.id.tv_set_name);
-		tv_set_nick = (TextView) findViewById(R.id.tv_set_nick);
+		// avatar
 		layout_head = (RelativeLayout) findViewById(R.id.layout_head);
-		layout_nick = (RelativeLayout) findViewById(R.id.layout_nick);
+		iv_avator = (ImageView) findViewById(R.id.iv_avator);
+		iv_avator_arrow = (ImageView) findViewById(R.id.iv_avator_arrow);
+		// name
+		tv_name = (TextView) findViewById(R.id.tv_name);
+		// description
+		layout_description = (RelativeLayout) findViewById(R.id.layout_description);
+		tv_description = (TextView) findViewById(R.id.tv_description);
+		iv_description_arrow = (ImageView) findViewById(R.id.iv_description_arrow);
+		// gender
 		layout_gender = (RelativeLayout) findViewById(R.id.layout_gender);
-		tv_set_gender = (TextView) findViewById(R.id.tv_set_gender);
-		btn_chat = (Button) findViewById(R.id.btn_chat);
+		tv_gender = (TextView) findViewById(R.id.tv_gender);
+		iv_gender_arrow = (ImageView) findViewById(R.id.iv_gender_arrow);
+		// button
 		btn_add_friend = (Button) findViewById(R.id.btn_add_friend);
+		btn_chat = (Button) findViewById(R.id.btn_chat);
+
 		btn_add_friend.setEnabled(false);
 		btn_chat.setEnabled(false);
 		if (from.equals("me")) {
 			initBackTitle("个人资料");
 			layout_head.setOnClickListener(this);
-			layout_nick.setOnClickListener(this);
+			layout_description.setOnClickListener(this);
 			layout_gender.setOnClickListener(this);
-			iv_nickarraw.setVisibility(View.VISIBLE);
-			iv_arraw.setVisibility(View.VISIBLE);
+			iv_avator_arrow.setVisibility(View.VISIBLE);
+			iv_description_arrow.setVisibility(View.VISIBLE);
+			iv_gender_arrow.setVisibility(View.VISIBLE);
 			btn_chat.setVisibility(View.GONE);
 			btn_add_friend.setVisibility(View.GONE);
 		} else {
 			initBackTitle("详细资料");
-			iv_nickarraw.setVisibility(View.INVISIBLE);
-			iv_arraw.setVisibility(View.INVISIBLE);
+			iv_avator_arrow.setVisibility(View.INVISIBLE);
+			iv_description_arrow.setVisibility(View.INVISIBLE);
+			iv_gender_arrow.setVisibility(View.INVISIBLE);
 			// 不管对方是不是你的好友，均可以发送消息--BmobIM_V1.1.2修改
 			btn_chat.setVisibility(View.VISIBLE);
 			btn_chat.setOnClickListener(this);
@@ -95,7 +118,10 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void initMeData() {
+		// 先加载当前用户数据
 		User user = userManager.getCurrentUser(User.class);
+		updateUser(user);
+		// 再重新请求用户数据
 		initOtherData(user.getUsername());
 	}
 
@@ -123,11 +149,11 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 
 	private void updateUser(User user) {
 		// 更改
-		imageLoader.displayImage(user.getAvatar(), iv_set_avator,
+		imageLoader.displayImage(user.getAvatar(), iv_avator,
 				ImageOptHelper.getAvatarOptions());
-		tv_set_name.setText(user.getUsername());
-		tv_set_nick.setText(user.getNick());
-		tv_set_gender.setText(user.isSex() ? "男" : "女");
+		tv_name.setText(user.getUsername());
+		tv_description.setText(user.getDescription());
+		tv_gender.setText(user.isSex() ? "男" : "女");
 	}
 
 	@Override
@@ -140,9 +166,10 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		Intent intent;
 		switch (v.getId()) {
 		case R.id.btn_chat:// 发起聊天
-			Intent intent = new Intent(this, ChatActivity.class);
+			intent = new Intent(this, ChatActivity.class);
 			intent.putExtra("user", user);
 			startActivity(intent);
 			finish();
@@ -150,8 +177,11 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 		case R.id.layout_head:
 			showImgPickDialog();
 			break;
-		case R.id.layout_nick:
-			// TODO intent2Activity(UpdateInfoActivity.class);
+		case R.id.layout_description:
+			intent = new Intent(this, UpdateEditInfoActivity.class);
+			intent.putExtra("type", UpdateEditInfoActivity.EDIT_INFO_DESCRIPTION);
+			intent.putExtra("oldData", tv_description.getText().toString());
+			startActivity(intent);
 			break;
 		case R.id.layout_gender:// 性别
 			showSexChooseDialog();
@@ -179,44 +209,42 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 				}).show();
 	}
 
-	String[] sexs = new String[] { "男", "女" };
-
+	private String[] sexs = new String[] { "男", "女" };
 	private void showSexChooseDialog() {
-		new AlertDialog.Builder(this)
-				.setTitle("单选框")
-				.setIcon(android.R.drawable.ic_dialog_info)
-				.setSingleChoiceItems(sexs, 0,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
-								BmobLog.i("点击的是" + sexs[which]);
-								updateInfo(which);
-								dialog.dismiss();
-							}
-						}).setNegativeButton("取消", null).show();
+		DialogUtils.showListDialog(this, "修改性别", sexs, 
+				new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				showLog("点击的是" + sexs[which]);
+				boolean isMale = which == 0;
+				updateGender(isMale);
+			}
+		});
 	}
 
 	/**
-	 * 修改资料
+	 * 修改性别
 	 */
-	private void updateInfo(int which) {
+	private void updateGender(boolean isMale) {
+		progressDialog.show();
+		
 		final User user = userManager.getCurrentUser(User.class);
-		BmobLog.i("updateInfo 性别：" + user.isSex());
-		user.setSex(which == 0);
-
+		showLog("updateInfo 性别：" + user.isSex());
+		user.setSex(isMale);
 		user.update(this, new UpdateListener() {
 
 			@Override
 			public void onSuccess() {
-				showToast("修改成功");
-				final User u = userManager.getCurrentUser(User.class);
-				BmobLog.i("修改成功后的sex = " + u.isSex());
-				tv_set_gender.setText(user.isSex() ? "男" : "女");
+				showLog("修改成功后的sex = " + user.isSex());
+				progressDialog.dismiss();
+				updateUser(user);
 			}
 
 			@Override
 			public void onFailure(int arg0, String arg1) {
-				showToast("onFailure:" + arg1);
+				showToast("性别修改失败:" + arg1);
+				progressDialog.dismiss();
 			}
 		});
 	}
@@ -306,7 +334,7 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 		progressDialog.show();
 
 		final String path = ImageUtils.getImageAbsolutePath(this, imgUri);
-		BmobLog.i("头像地址：" + path);
+		showLog("头像地址：" + path);
 		final BmobFile bmobFile = new BmobFile(new File(path));
 		bmobFile.upload(this, new UploadFileListener() {
 
@@ -336,14 +364,13 @@ public class UserInfoActivity extends BaseActivity implements OnClickListener {
 	}
 
 	private void updateUserAvatar(final String url) {
-		User user = (User) userManager.getCurrentUser(User.class);
+		final User user = (User) userManager.getCurrentUser(User.class);
 		user.setAvatar(url);
 		user.update(this, new UpdateListener() {
 			@Override
 			public void onSuccess() {
-				imageLoader.displayImage(url, iv_set_avator,
-						ImageOptHelper.getAvatarOptions());
-
+				updateUser(user);
+				
 				showToast("头像更新成功！");
 				progressDialog.dismiss();
 				ImageUtils.deleteCropImageFile();
